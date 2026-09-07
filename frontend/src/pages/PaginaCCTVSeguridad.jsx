@@ -131,7 +131,7 @@ function PaginaCCTVSeguridad() {
 			<MiniFormulario
 				servicio="CCTV y seguridad"
 				titulo="Agenda tu visita tecnica"
-				descripcion="Un especialista evalua el sitio y propone la configuracion adecuada."
+				descripcion="Un especialista evaluara el sitio y propondra la configuracion adecuada."
 				textoBoton="Quiero este servicio"
 				campoExtra={{
 					nombre: 'propiedad',
