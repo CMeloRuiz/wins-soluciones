@@ -92,16 +92,14 @@
  */
 
 .plan-card.plan-card--destacado {
-	background-color: #cf4a12;
-	border-color: #cf4a12;
-	/* Sobresale por encima de las laterales */
+	background-color: #2035c3;
 	padding: 46px 32px 40px;
-	box-shadow: 0 22px 45px rgba(207, 74, 18, 0.32);
+	box-shadow: 0 22px 45px rgba(141, 207, 201, 0.32);
 }
 
 .plan-card.plan-card--destacado:hover {
-	border-color: #cf4a12;
-	box-shadow: 0 28px 55px rgba(207, 74, 18, 0.42);
+	border-color: #2035c3;
+	box-shadow: 0 28px 55px rgba(29, 137, 187, 0.42);
 }
 
 /* La animacion de aparicion mueve el eje Y, asi que el hover se suma sin saltos */
@@ -258,13 +256,13 @@
 .plan-card--destacado .plan-btn {
 	background-color: #fff;
 	border-color: #fff;
-	color: #b8420f;
+	color: #212121;
 }
 
 .plan-card--destacado .plan-btn:hover {
 	background-color: #fff5f1;
 	border-color: #fff5f1;
-	color: #8f3109;
+	color: #3c3c3c;
 }
 
 /* ===== Responsive ===== */
