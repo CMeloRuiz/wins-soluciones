@@ -1,0 +1,101 @@
+/* ===== Fibra Optica: linea de tiempo del recorrido de la senal ===== */
+
+.fibra-recorrido {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 24px;
+	margin-top: 60px;
+}
+
+/*
+ * Linea que une los pasos. Va detras de las tarjetas y se recorta a los
+ * extremos para no sobresalir del primero ni del ultimo.
+ */
+.fibra-recorrido::before {
+	content: '';
+	position: absolute;
+	top: 44px;
+	left: 12.5%;
+	right: 12.5%;
+	height: 1px;
+	background: linear-gradient(90deg, rgba(45, 61, 185, 0) 0%, rgba(143, 157, 255, 0.45) 15%, rgba(143, 157, 255, 0.45) 85%, rgba(45, 61, 185, 0) 100%);
+}
+
+.fibra-paso {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 0 8px;
+}
+
+.fibra-paso-numero {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background-color: #2d3db9;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.fibra-paso-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 62px;
+	height: 62px;
+	margin-top: 14px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 16px;
+	/* Fondo solido: tapa la linea que pasa por detras */
+	background-color: #131c33;
+	color: #8f9dff;
+}
+
+.fibra-paso-icon svg {
+	width: 26px;
+	height: 26px;
+}
+
+.fibra-paso-title {
+	margin-top: 18px;
+	color: #fff;
+	font-size: 1.02rem;
+	font-weight: 700;
+}
+
+.fibra-paso-text {
+	margin-top: 9px;
+	color: #9ca3af;
+	font-size: 13.8px;
+	line-height: 1.7;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.fibra-recorrido {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 34px 20px;
+		margin-top: 45px;
+	}
+
+	/* Con dos filas la linea horizontal ya no describe el recorrido */
+	.fibra-recorrido::before {
+		display: none;
+	}
+}
+
+@media (max-width: 600px) {
+	.fibra-recorrido {
+		grid-template-columns: 1fr;
+		gap: 30px;
+		margin-top: 38px;
+	}
+}

@@ -1,0 +1,258 @@
+/* ===== Miniformulario de servicio =====
+ *
+ * Cierra cada pagina de servicio, asi que debe leerse de un vistazo: bloque
+ * compacto, campos en dos columnas y una sola llamada a la accion.
+ */
+
+.miniform {
+	padding: 76px 50px;
+}
+
+/* Variantes segun el fondo de la seccion anterior */
+.miniform--claro {
+	background-color: #f4f5f7;
+}
+
+.miniform--oscuro {
+	position: relative;
+	background-color: #0a1128;
+	overflow: hidden;
+}
+
+.miniform--oscuro::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(60% 70% at 50% 0%, rgba(45, 61, 185, 0.22) 0%, rgba(10, 17, 40, 0) 62%);
+}
+
+.miniform-container {
+	position: relative;
+	/* Ancho contenido: es un formulario corto, estirarlo lo haria pesado */
+	max-width: 620px;
+	margin: 0 auto;
+}
+
+.miniform-card {
+	padding: 30px 30px 32px;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	border-radius: 16px;
+	background-color: #fff;
+	box-shadow: 0 18px 45px rgba(10, 17, 40, 0.11);
+}
+
+.miniform--oscuro .miniform-card {
+	border-color: rgba(255, 255, 255, 0.5);
+	box-shadow: 0 24px 55px rgba(4, 8, 20, 0.45);
+}
+
+/* ===== Encabezado ===== */
+
+.miniform-head {
+	text-align: center;
+	/* Separador sutil entre el encabezado y los campos */
+	padding-bottom: 22px;
+	border-bottom: 1px solid rgba(10, 17, 40, 0.07);
+}
+
+/* Servicio preseleccionado, como pastilla junto al titulo */
+.miniform-pill {
+	display: inline-block;
+	padding: 5px 14px;
+	border-radius: 999px;
+	background-color: rgba(45, 61, 185, 0.1);
+	color: #2d3db9;
+	font-size: 11.5px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.miniform-title {
+	margin-top: 12px;
+	color: #0a1128;
+	font-size: 1.22rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.miniform-sub {
+	margin-top: 7px;
+	color: #6b7280;
+	font-size: 13.5px;
+	line-height: 1.6;
+}
+
+/* ===== Campos ===== */
+
+/* Dos columnas: reduce la altura del bloque a la mitad */
+.miniform-campos {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px;
+	margin-top: 22px;
+}
+
+/* Los campos largos ocupan la fila completa */
+.miniform-campo--ancho {
+	grid-column: 1 / -1;
+}
+
+.miniform-campo {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-width: 0;
+}
+
+.miniform-campo label {
+	color: #3b465e;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.miniform-campo input,
+.miniform-campo select,
+.miniform-campo textarea {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid rgba(10, 17, 40, 0.14);
+	border-radius: 8px;
+	background-color: #f8f9fb;
+	color: #0a1128;
+	font-size: 13.5px;
+	font-family: inherit;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.miniform-campo textarea {
+	resize: vertical;
+	min-height: 78px;
+	line-height: 1.6;
+}
+
+.miniform-campo select {
+	cursor: pointer;
+	/* Iguala la altura de los inputs pese al control nativo */
+	height: 39px;
+}
+
+.miniform-campo input:focus,
+.miniform-campo select:focus,
+.miniform-campo textarea:focus {
+	outline: none;
+	background-color: #fff;
+	border-color: #2d3db9;
+	box-shadow: 0 0 0 3px rgba(45, 61, 185, 0.15);
+}
+
+/* ===== Boton ===== */
+
+.miniform-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: 100%;
+	margin-top: 20px;
+	padding: 13px 28px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(45, 61, 185, 0.28);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.miniform-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	box-shadow: 0 10px 28px rgba(45, 61, 185, 0.42);
+	transform: translateY(-2px);
+}
+
+.miniform-btn-arrow {
+	transition: transform 0.3s ease;
+}
+
+.miniform-btn:hover .miniform-btn-arrow {
+	transform: translateX(4px);
+}
+
+.miniform-btn--secundario {
+	width: auto;
+	background-color: transparent;
+	border-color: rgba(10, 17, 40, 0.18);
+	color: #2d3db9;
+	box-shadow: none;
+}
+
+.miniform-btn--secundario:hover {
+	background-color: rgba(45, 61, 185, 0.08);
+	border-color: rgba(45, 61, 185, 0.4);
+	box-shadow: none;
+}
+
+/* ===== Confirmacion ===== */
+
+.miniform-exito {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 14px 0 10px;
+}
+
+.miniform-exito-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 50px;
+	height: 50px;
+	margin-bottom: 18px;
+	border-radius: 50%;
+	background-color: rgba(45, 61, 185, 0.1);
+	color: #2d3db9;
+}
+
+.miniform-exito-icon svg {
+	width: 24px;
+	height: 24px;
+}
+
+.miniform-exito .miniform-sub {
+	max-width: 38ch;
+}
+
+.miniform-exito .miniform-btn {
+	margin-top: 22px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.miniform {
+		padding: 64px 30px;
+	}
+}
+
+@media (max-width: 560px) {
+	.miniform {
+		padding: 52px 20px;
+	}
+
+	.miniform-card {
+		padding: 26px 20px 28px;
+	}
+
+	/* Una sola columna: en pantallas estrechas los pares quedan apretados */
+	.miniform-campos {
+		grid-template-columns: 1fr;
+	}
+}

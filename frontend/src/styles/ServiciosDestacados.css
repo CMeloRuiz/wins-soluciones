@@ -1,0 +1,182 @@
+/* ===== Seccion Servicios destacados ===== */
+/* Fondo gris claro: es el respiro visual entre dos secciones oscuras */
+
+.servicios {
+	background-color: #f4f5f7;
+	padding: 110px 50px;
+}
+
+.servicios-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* ===== Encabezado ===== */
+
+.servicios-header {
+	text-align: center;
+	max-width: 640px;
+	margin: 0 auto;
+}
+
+/* Badge: misma forma que el del Hero, invertido para fondo claro */
+.servicios-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(10, 17, 40, 0.1);
+	border-radius: 999px;
+	background-color: #fff;
+	color: #3b465e;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.servicios-badge-icon {
+	color: #2d3db9;
+	font-size: 10px;
+	line-height: 1;
+}
+
+.servicios-title {
+	margin-top: 24px;
+	color: #0a1128;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.servicios-subtitle {
+	margin-top: 16px;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+/* ===== Grilla de tarjetas ===== */
+
+.servicios-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 28px;
+	margin-top: 60px;
+}
+
+.servicio-card {
+	display: flex;
+	flex-direction: column;
+	background-color: #fff;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 2px 6px rgba(10, 17, 40, 0.04);
+	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.servicio-card:hover {
+	transform: translateY(-6px);
+	border-color: rgba(45, 61, 185, 0.25);
+	box-shadow: 0 20px 40px rgba(10, 17, 40, 0.13);
+}
+
+/* --- Imagen --- */
+
+.servicio-card-media {
+	overflow: hidden;
+	/* Las esquinas superiores las recorta el overflow de la tarjeta */
+}
+
+.servicio-card-media img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+/* Zoom leve de la imagen al pasar el mouse sobre la tarjeta */
+.servicio-card:hover .servicio-card-media img {
+	transform: scale(1.06);
+}
+
+/* --- Contenido --- */
+
+.servicio-card-body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 26px 26px 28px;
+}
+
+.servicio-card-title {
+	color: #0a1128;
+	font-size: 1.15rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.servicio-card-text {
+	margin-top: 10px;
+	color: #6b7280;
+	font-size: 14.5px;
+	line-height: 1.65;
+}
+
+.servicio-card-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	/* margin-top auto alinea el link abajo aunque los textos midan distinto */
+	margin-top: auto;
+	padding-top: 22px;
+	color: #2d3db9;
+	font-size: 14px;
+	font-weight: 600;
+	align-self: flex-start;
+	transition: color 0.3s ease;
+}
+
+.servicio-card-link:hover {
+	color: #1e2a8a;
+}
+
+.servicio-card-arrow {
+	transition: transform 0.3s ease;
+}
+
+.servicio-card-link:hover .servicio-card-arrow {
+	transform: translateX(4px);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.servicios {
+		padding: 90px 30px;
+	}
+
+	/* Dos columnas: la tercera tarjeta pasa a la fila siguiente */
+	.servicios-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px;
+		margin-top: 50px;
+	}
+}
+
+@media (max-width: 700px) {
+	.servicios {
+		padding: 70px 20px;
+	}
+
+	.servicios-grid {
+		grid-template-columns: 1fr;
+		gap: 22px;
+		margin-top: 40px;
+	}
+
+	.servicio-card-body {
+		padding: 22px 22px 24px;
+	}
+}

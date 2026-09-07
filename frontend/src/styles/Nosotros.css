@@ -1,0 +1,224 @@
+/* ===== Seccion Nosotros ===== */
+/* Fondo azul oscuro: continua el tono con el que cierra el Hero */
+
+.nosotros {
+	position: relative;
+	background-color: #0a1128;
+	padding: 110px 50px;
+	overflow: hidden;
+}
+
+/* Bloom azul muy tenue, mismo recurso usado en el header */
+.nosotros::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(70% 60% at 15% 0%, rgba(45, 61, 185, 0.16) 0%, rgba(10, 17, 40, 0) 65%);
+}
+
+.nosotros-container {
+	position: relative;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 70px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* ===== Badge (mismo lenguaje que el badge del Hero) ===== */
+
+.nosotros-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background-color: rgba(10, 17, 40, 0.55);
+	color: #d5d9e6;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.nosotros-badge-icon {
+	color: #5b6ee8;
+	font-size: 10px;
+	line-height: 1;
+}
+
+/* ===== Textos ===== */
+
+.nosotros-title {
+	margin-top: 24px;
+	color: #fff;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+	max-width: 15ch;
+}
+
+.nosotros-description {
+	margin-top: 20px;
+	max-width: 52ch;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+/* ===== Valores clave ===== */
+
+.nosotros-valores {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin-top: 34px;
+}
+
+.nosotros-valor {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	color: #d5d9e6;
+	font-size: 14.5px;
+	font-weight: 500;
+}
+
+.nosotros-valor-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	background-color: rgba(45, 61, 185, 0.16);
+	color: #8f9dff;
+}
+
+.nosotros-valor-icon svg {
+	width: 20px;
+	height: 20px;
+}
+
+/* ===== Imagen ===== */
+
+.nosotros-imagen {
+	position: relative;
+	border-radius: 16px;
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 25px 55px rgba(4, 8, 20, 0.55);
+}
+
+.nosotros-imagen img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+}
+
+/* Gradiente azul en los bordes: funde la foto con el fondo de la seccion */
+.nosotros-imagen::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(180deg, rgba(10, 17, 40, 0.35) 0%, rgba(10, 17, 40, 0) 30%, rgba(10, 17, 40, 0.45) 100%),
+		linear-gradient(90deg, rgba(10, 17, 40, 0.4) 0%, rgba(10, 17, 40, 0) 25%, rgba(10, 17, 40, 0) 75%, rgba(10, 17, 40, 0.4) 100%);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.nosotros {
+		padding: 90px 30px;
+	}
+
+	.nosotros-container {
+		/* Imagen arriba, texto abajo: la foto introduce la seccion en movil */
+		grid-template-columns: 1fr;
+		gap: 45px;
+	}
+
+	.nosotros-imagen {
+		order: -1;
+	}
+
+	.nosotros-title,
+	.nosotros-description {
+		max-width: none;
+	}
+}
+
+@media (max-width: 600px) {
+	.nosotros {
+		padding: 70px 20px;
+	}
+
+	.nosotros-valores {
+		gap: 12px;
+		margin-top: 28px;
+	}
+
+	.nosotros-valor {
+		font-size: 14px;
+	}
+
+	.nosotros-valor-icon {
+		width: 36px;
+		height: 36px;
+	}
+
+	.nosotros-valor-icon svg {
+		width: 18px;
+		height: 18px;
+	}
+}
+
+/* ===== Boton hacia la pagina completa ===== */
+/* Mismo lenguaje que el boton primario del Hero */
+
+.nosotros-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 36px;
+	padding: 14px 32px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14.5px;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(45, 61, 185, 0.3);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.nosotros-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	box-shadow: 0 10px 28px rgba(45, 61, 185, 0.45);
+	transform: translateY(-2px);
+}
+
+.nosotros-btn-arrow {
+	transition: transform 0.3s ease;
+}
+
+.nosotros-btn:hover .nosotros-btn-arrow {
+	transform: translateX(4px);
+}
+
+@media (max-width: 600px) {
+	.nosotros-btn {
+		width: 100%;
+		justify-content: center;
+		margin-top: 30px;
+	}
+}

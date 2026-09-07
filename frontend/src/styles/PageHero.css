@@ -1,0 +1,179 @@
+/* ===== Hero compacto de paginas internas ===== */
+/* Patron reutilizable: mucho mas bajo que el Hero del Home */
+
+.page-hero {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	align-items: center;
+	padding: 80px 50px;
+	overflow: hidden;
+	background-size: cover;
+	background-position: center;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/*
+ * Textura ligera sin imagen: una malla diagonal muy tenue mas el bloom azul
+ * que ya usan el header y la seccion Nosotros del Home.
+ */
+.page-hero::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background:
+		radial-gradient(75% 130% at 12% 0%, rgba(45, 61, 185, 0.28) 0%, rgba(10, 17, 40, 0) 60%),
+		repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.022) 0px, rgba(255, 255, 255, 0.022) 1px, transparent 1px, transparent 11px);
+}
+
+/* Con imagen de fondo se agrega un velo oscuro para mantener el contraste */
+.page-hero--con-imagen::before {
+	background:
+		radial-gradient(75% 130% at 12% 0%, rgba(45, 61, 185, 0.3) 0%, rgba(10, 17, 40, 0) 60%),
+		linear-gradient(160deg, rgba(10, 17, 40, 0.92) 0%, rgba(17, 28, 46, 0.88) 100%);
+}
+
+.page-hero-content {
+	position: relative;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.page-hero--centro {
+	text-align: center;
+}
+
+.page-hero--centro .page-hero-breadcrumb ol {
+	justify-content: center;
+}
+
+.page-hero--centro .page-hero-description {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* ===== Breadcrumb ===== */
+
+.page-hero-breadcrumb ol {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+}
+
+/* Separador generado por CSS: no ensucia el marcado */
+.page-hero-breadcrumb li + li::before {
+	content: '/';
+	margin-right: 8px;
+	color: rgba(255, 255, 255, 0.28);
+}
+
+.page-hero-breadcrumb li {
+	display: flex;
+	align-items: center;
+	color: #9ca3af;
+}
+
+.page-hero-breadcrumb a {
+	color: #9ca3af;
+	transition: color 0.3s ease;
+}
+
+.page-hero-breadcrumb a:hover {
+	color: #fff;
+}
+
+/* La pagina actual se destaca del resto de la ruta */
+.page-hero-breadcrumb [aria-current='page'] {
+	color: #c5cbdd;
+	font-weight: 500;
+}
+
+/* ===== Etiqueta destacada ===== */
+
+.page-hero-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 18px;
+	padding: 8px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 999px;
+	background-color: rgba(255, 255, 255, 0.06);
+	color: #d5d9e6;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+}
+
+.page-hero-badge-icon {
+	font-size: 9px;
+	line-height: 1;
+	color: #8f9dff;
+}
+
+/*
+ * Variante premium: acento plata frio. Se evita el dorado a proposito porque
+ * choca con el azul de la identidad; el plata lee como gama alta y convive
+ * con la paleta existente.
+ */
+.page-hero-badge--premium {
+	border-color: rgba(203, 213, 232, 0.36);
+	background: linear-gradient(135deg, rgba(203, 213, 232, 0.18) 0%, rgba(148, 163, 184, 0.05) 100%);
+	color: #e8eef8;
+	box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+.page-hero-badge--premium .page-hero-badge-icon {
+	color: #cbd5e8;
+}
+
+/* Con badge, el titulo se pega un poco menos */
+.page-hero-badge + .page-hero-title {
+	margin-top: 18px;
+}
+
+/* ===== Titulo ===== */
+
+.page-hero-title {
+	margin-top: 16px;
+	color: #fff;
+	font-size: clamp(1.9rem, 4.2vw, 3.1rem);
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -1px;
+}
+
+.page-hero-description {
+	margin-top: 16px;
+	max-width: 56ch;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.page-hero {
+		padding: 65px 30px;
+	}
+}
+
+@media (max-width: 600px) {
+	.page-hero {
+		padding: 48px 20px;
+	}
+
+	.page-hero-breadcrumb ol {
+		font-size: 12px;
+	}
+
+	.page-hero-title {
+		margin-top: 12px;
+	}
+}

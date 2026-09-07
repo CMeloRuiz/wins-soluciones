@@ -1,0 +1,81 @@
+/* ===== Internet Empresarial: tratamiento corporativo =====
+ * Solo lo que diferencia esta pagina de ServicioBase.css.
+ */
+
+.emp-caracteristicas {
+	/* Azul un punto mas profundo que el resto de secciones oscuras */
+	background-color: #080e21;
+}
+
+.emp-caracteristicas .srv-title {
+	/* Tipografia algo mas contenida: menos comercial, mas tecnica */
+	letter-spacing: -0.4px;
+}
+
+/* 7 tarjetas: 4 arriba y 3 abajo centradas queda desparejo, asi que se usan
+   columnas fluidas y la ultima fila se centra sola. */
+.emp-grid {
+	grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+	justify-content: center;
+}
+
+/* Tarjeta tipo "glass" con borde fino */
+.emp-card {
+	position: relative;
+	background-color: rgba(255, 255, 255, 0.035);
+	border-color: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(2px);
+	overflow: hidden;
+}
+
+/*
+ * Brillo del borde al hover: un gradiente en un pseudo-elemento recortado con
+ * mask, en lugar de un border-image, para conservar el radio de la tarjeta.
+ */
+.emp-card::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	padding: 1px;
+	background: linear-gradient(135deg, rgba(143, 157, 255, 0.85) 0%, rgba(45, 61, 185, 0.15) 45%, rgba(143, 157, 255, 0) 75%);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	opacity: 0;
+	transition: opacity 0.35s ease;
+	pointer-events: none;
+}
+
+.emp-card:hover::before {
+	opacity: 1;
+}
+
+.emp-card:hover {
+	background-color: rgba(255, 255, 255, 0.06);
+	border-color: rgba(255, 255, 255, 0.07);
+	box-shadow: 0 20px 45px rgba(4, 8, 20, 0.55);
+}
+
+.emp-card .srv-card-title {
+	font-size: 1.05rem;
+	letter-spacing: -0.1px;
+}
+
+.emp-card .srv-card-text {
+	font-size: 13.8px;
+	line-height: 1.72;
+}
+
+@media (max-width: 1000px) {
+	.emp-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 700px) {
+	.emp-grid {
+		grid-template-columns: 1fr;
+	}
+}

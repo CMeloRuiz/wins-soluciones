@@ -1,0 +1,343 @@
+.site-header {
+	position: relative;
+	z-index: 1000;
+	background-color: #0a1128;
+	/* Bloom azul suave que nace abajo y continua en el glow del hero */
+	background-image: radial-gradient(120% 180% at 50% 118%, rgba(45, 61, 185, 0.28) 0%, rgba(10, 17, 40, 0) 62%);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	padding: 10px 50px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.logo-container {
+	width: 150px;
+	height: 60px;
+	flex-shrink: 0;
+}
+
+.logo-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+/* En escritorio el contenedor "desaparece" del layout:
+   nav y boton quedan como hijos directos del header, igual que antes. */
+.header-collapse {
+	display: contents;
+}
+
+.nav-links {
+	text-transform: capitalize;
+	font-size: 14px;
+	font-weight: 500;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 50px;
+}
+
+.nav-links a {
+	color: #c5cbdd;
+	transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+	color: #fff;
+}
+
+/* El CTA es un enlace de router; se cubre tambien <button> por compatibilidad */
+.contact-btn button,
+.contact-btn a {
+	display: inline-block;
+	text-align: center;
+	font-weight: 500;
+	font-family: inherit;
+	font-size: 14px;
+	background-color: #2d3db9;
+	padding: 10px 40px;
+	border: none;
+	border-radius: 5px;
+	color: #fafafa;
+	cursor: pointer;
+	white-space: nowrap;
+	box-shadow: 0 4px 16px rgba(45, 61, 185, 0.35);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-btn button:hover,
+.contact-btn a:hover {
+	background-color: #3a4bd6;
+	color: #fafafa;
+	box-shadow: 0 6px 22px rgba(45, 61, 185, 0.5);
+}
+
+/* Dropdow */
+
+.nav-links li.dropdown {
+	position: relative;
+	list-style: none;
+}
+
+.nav-links li.dropdown > a {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+}
+
+.nav-links li.dropdown > a::after {
+	content: '';
+	width: 6px;
+	height: 6px;
+	border-right: 1.5px solid #c5cbdd;
+	border-bottom: 1.5px solid #c5cbdd;
+	transform: rotate(45deg);
+	transition: transform 0.3s ease, border-color 0.3s ease;
+	margin-top: -3px;
+}
+
+.dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: -20px;
+	margin-top: 10px;
+	background-color: #111a34;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	min-width: 220px;
+	padding: 10px 0;
+	border-radius: 8px;
+	box-shadow: 0 18px 35px rgba(4, 8, 20, 0.6);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(10px);
+	transition: all 0.3s ease;
+	z-index: 100;
+}
+
+.dropdown-menu li {
+	list-style: none;
+}
+
+.dropdown-menu li a {
+	display: block;
+	padding: 10px 20px;
+	color: #c5cbdd;
+	white-space: nowrap;
+	text-transform: capitalize;
+	transition: all 0.2s ease;
+}
+
+.dropdown-menu li a:hover {
+	background-color: rgba(45, 61, 185, 0.25);
+	color: #fff;
+	padding-left: 25px;
+}
+
+/* El hover solo aplica en escritorio (en tactil se queda "pegado") */
+@media (min-width: 901px) {
+	.dropdown:hover .dropdown-menu {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.nav-links li.dropdown:hover > a::after {
+		transform: rotate(225deg);
+		margin-top: 3px;
+		border-color: #fff;
+	}
+}
+
+/* ===== Boton hamburguesa (oculto en escritorio) ===== */
+
+.menu-toggle {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	width: 44px;
+	height: 44px;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.menu-toggle span {
+	display: block;
+	width: 20px;
+	height: 2px;
+	border-radius: 2px;
+	background-color: #c5cbdd;
+	transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+/* Las 3 barras se transforman en una "X" */
+.menu-toggle.is-open span:nth-child(1) {
+	transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle.is-open span:nth-child(2) {
+	opacity: 0;
+}
+
+.menu-toggle.is-open span:nth-child(3) {
+	transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===== Responsive ===== */
+
+/* Pantallas medianas: se comprimen espacios antes de pasar a menu movil */
+@media (max-width: 1150px) {
+	.site-header {
+		padding: 10px 30px;
+	}
+
+	.nav-links {
+		gap: 26px;
+		font-size: 13px;
+	}
+
+	.contact-btn button,
+	.contact-btn a {
+		padding: 10px 24px;
+		font-size: 13px;
+	}
+}
+
+/* Menu movil */
+@media (max-width: 900px) {
+	.site-header {
+		padding: 10px 20px;
+	}
+
+	.logo-container {
+		width: 110px;
+		height: 55px;
+	}
+
+	.menu-toggle {
+		display: flex;
+	}
+
+	/* El contenedor pasa a ser el panel desplegable */
+	.header-collapse {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		padding: 5px 20px 25px;
+		background-color: #0b1327;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		box-shadow: 0 18px 35px rgba(4, 8, 20, 0.6);
+		max-height: calc(100vh - 75px);
+		overflow-y: auto;
+
+		/* Estado cerrado */
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-10px);
+		transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+	}
+
+	.header-collapse.is-open {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.nav-links {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+		font-size: 15px;
+	}
+
+	.nav-links > a,
+	.nav-links li.dropdown > a {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 15px 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+	}
+
+	.nav-links li.dropdown {
+		position: static;
+	}
+
+	/* La flecha rota segun el estado abierto (click), no por hover */
+	.nav-links li.dropdown.is-open > a::after {
+		transform: rotate(225deg);
+		margin-top: 3px;
+		border-color: #fff;
+	}
+
+	/* El submenu se vuelve un acordeon en flujo normal */
+	.dropdown-menu {
+		position: static;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		margin-top: 0;
+		padding: 0;
+		min-width: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background-color: transparent;
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.3s ease;
+	}
+
+	.dropdown.is-open .dropdown-menu {
+		max-height: 320px;
+	}
+
+	.dropdown-menu li a {
+		padding: 13px 0 13px 18px;
+		font-size: 14px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		white-space: normal;
+	}
+
+	.dropdown-menu li a:hover {
+		background-color: transparent;
+		padding-left: 24px;
+	}
+
+	.contact-btn {
+		margin-top: 20px;
+	}
+
+	.contact-btn button,
+	.contact-btn a {
+		width: 100%;
+		padding: 14px 20px;
+		font-size: 14px;
+	}
+}
+
+/* Moviles pequenos */
+@media (max-width: 400px) {
+	.site-header {
+		padding: 8px 15px;
+	}
+
+	.logo-container {
+		width: 95px;
+		height: 48px;
+	}
+
+	.header-collapse {
+		padding: 5px 15px 20px;
+		max-height: calc(100vh - 64px);
+	}
+}

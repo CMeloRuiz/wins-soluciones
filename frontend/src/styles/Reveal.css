@@ -1,0 +1,29 @@
+/* ===== Aparicion al hacer scroll ===== */
+
+.reveal {
+	opacity: 0;
+	transform: translateY(24px);
+	/* Curva de salida suave: entra rapido y frena, sin rebote */
+	transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+		transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+	will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+	opacity: 1;
+	transform: none;
+	/* Liberada la capa de composicion una vez terminada la animacion */
+	will-change: auto;
+}
+
+/*
+ * Si el usuario pide reducir movimiento, el contenido aparece de inmediato.
+ * Nunca debe quedar invisible por depender de una animacion desactivada.
+ */
+@media (prefers-reduced-motion: reduce) {
+	.reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}

@@ -1,0 +1,488 @@
+/* ===== Pagina Nosotros =====
+ *
+ * Ritmo de fondos, continuando el criterio del Home:
+ *   PageHero #0a1128 -> Historia #fff -> Compromiso #f4f5f7
+ *   -> Infraestructura #0a1128 -> Vision/Mision/Valores #fff -> Footer #0a1128
+ *
+ * El prefijo "np-" agrupa los elementos compartidos entre bloques de esta
+ * pagina (badge y titulo), para no chocar con las clases del Home.
+ */
+
+/* ===== Elementos compartidos ===== */
+
+/* Badge sobre fondo oscuro */
+.np-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background-color: rgba(10, 17, 40, 0.55);
+	color: #d5d9e6;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.np-badge-icon {
+	color: #5b6ee8;
+	font-size: 10px;
+	line-height: 1;
+}
+
+/* Variante para fondo claro */
+.np-badge--claro {
+	border-color: rgba(10, 17, 40, 0.1);
+	background-color: #f4f5f7;
+	color: #3b465e;
+}
+
+.np-badge--claro .np-badge-icon {
+	color: #2d3db9;
+}
+
+.np-title {
+	margin-top: 24px;
+	color: #fff;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.np-title--oscuro {
+	color: #0a1128;
+}
+
+/* Tratamiento comun de imagenes, igual que en el Home */
+.historia-imagen,
+.infra-imagen,
+.compromiso-imagen {
+	position: relative;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.historia-imagen img,
+.infra-imagen img,
+.compromiso-imagen img {
+	display: block;
+	width: 100%;
+	object-fit: cover;
+}
+
+/* ===== 1. Nuestra historia ===== */
+
+.historia {
+	background-color: #fff;
+	padding: 100px 50px;
+}
+
+.historia-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 70px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.historia-imagen {
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	box-shadow: 0 25px 55px rgba(10, 17, 40, 0.14);
+}
+
+.historia-imagen img {
+	aspect-ratio: 4 / 3;
+}
+
+/* Velo azul tenue: integra la foto con la paleta de marca */
+.historia-imagen::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: linear-gradient(140deg, rgba(45, 61, 185, 0.14) 0%, rgba(10, 17, 40, 0) 55%);
+}
+
+.historia-parrafo {
+	margin-top: 18px;
+	max-width: 54ch;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+/* ===== 2. Compromiso humano y tecnologico ===== */
+
+.compromiso {
+	background-color: #f4f5f7;
+	padding: 100px 50px;
+}
+
+.compromiso-container {
+	display: grid;
+	/* La tarjeta oscura pesa un poco mas que la columna de la cita */
+	grid-template-columns: 1fr 1.05fr;
+	align-items: start;
+	gap: 60px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* --- Cita destacada --- */
+
+.compromiso-cita {
+	position: relative;
+	padding-top: 46px;
+	color: #0a1128;
+	font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+	font-weight: 600;
+	line-height: 1.5;
+	letter-spacing: -0.3px;
+}
+
+/* Comillas decorativas grandes */
+.compromiso-comillas {
+	position: absolute;
+	top: -18px;
+	left: -4px;
+	color: rgba(45, 61, 185, 0.22);
+	font-size: 6rem;
+	line-height: 1;
+	font-family: Georgia, 'Times New Roman', serif;
+}
+
+.compromiso-parrafo {
+	margin-top: 22px;
+	max-width: 48ch;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+.compromiso-imagen {
+	margin-top: 34px;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	box-shadow: 0 18px 40px rgba(10, 17, 40, 0.12);
+}
+
+.compromiso-imagen img {
+	aspect-ratio: 16 / 7;
+}
+
+/* --- Tarjeta oscura --- */
+
+.compromiso-card {
+	position: relative;
+	overflow: hidden;
+	padding: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 16px;
+	background-color: #0a1128;
+	box-shadow: 0 25px 55px rgba(10, 17, 40, 0.28);
+}
+
+/* Mismo bloom azul del header y del PageHero */
+.compromiso-card::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(80% 60% at 85% 0%, rgba(45, 61, 185, 0.3) 0%, rgba(10, 17, 40, 0) 62%);
+}
+
+.compromiso-card > * {
+	position: relative;
+}
+
+.compromiso-card-texto {
+	margin-top: 22px;
+	color: #c5cbdd;
+	font-size: 14.5px;
+	line-height: 1.8;
+}
+
+/* ===== 3. Infraestructura y tecnologia ===== */
+
+.infra {
+	position: relative;
+	background-color: #0a1128;
+	padding: 100px 50px;
+	overflow: hidden;
+}
+
+.infra::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(65% 55% at 85% 0%, rgba(45, 61, 185, 0.16) 0%, rgba(10, 17, 40, 0) 65%);
+}
+
+.infra-container {
+	position: relative;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 70px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.infra-parrafo {
+	margin-top: 20px;
+	max-width: 54ch;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+.infra-imagen {
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 25px 55px rgba(4, 8, 20, 0.55);
+}
+
+.infra-imagen img {
+	aspect-ratio: 4 / 3;
+}
+
+/* Funde los bordes de la foto con el fondo oscuro */
+.infra-imagen::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(180deg, rgba(10, 17, 40, 0.3) 0%, rgba(10, 17, 40, 0) 30%, rgba(10, 17, 40, 0.4) 100%),
+		linear-gradient(90deg, rgba(10, 17, 40, 0.35) 0%, rgba(10, 17, 40, 0) 25%, rgba(10, 17, 40, 0) 75%, rgba(10, 17, 40, 0.35) 100%);
+}
+
+/* --- Franja de estadisticas (mismo patron que el Hero del Home) --- */
+
+.infra-stats {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	max-width: 1200px;
+	margin: 70px auto 0;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 12px;
+	background-color: rgba(10, 12, 20, 0.82);
+	overflow: hidden;
+}
+
+.infra-stat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 30px 20px;
+	border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.infra-stat:first-child {
+	border-left: none;
+}
+
+.infra-stat-number {
+	color: #fff;
+	font-size: clamp(1.6rem, 3vw, 2.2rem);
+	font-weight: 700;
+	line-height: 1;
+	/* Evita que el ancho salte durante el conteo */
+	font-variant-numeric: tabular-nums;
+}
+
+.infra-stat-label {
+	color: #9ca3af;
+	font-size: 11px;
+	font-weight: 500;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+/* ===== 4. Vision, mision y valores ===== */
+
+.vmv {
+	background-color: #fff;
+	padding: 100px 50px;
+}
+
+.vmv-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.vmv-header {
+	max-width: 640px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.vmv-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 28px;
+	margin-top: 55px;
+}
+
+/* Mismo tratamiento que las tarjetas de "Servicios destacados" del Home */
+.vmv-card {
+	display: flex;
+	flex-direction: column;
+	padding: 34px 30px 36px;
+	background-color: #fff;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	border-radius: 16px;
+	box-shadow: 0 2px 6px rgba(10, 17, 40, 0.04);
+	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.vmv-card:hover {
+	transform: translateY(-6px);
+	border-color: rgba(45, 61, 185, 0.25);
+	box-shadow: 0 20px 40px rgba(10, 17, 40, 0.13);
+}
+
+.vmv-card-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 46px;
+	height: 46px;
+	border-radius: 12px;
+	background-color: rgba(45, 61, 185, 0.1);
+	color: #2d3db9;
+}
+
+.vmv-card-icon svg {
+	width: 22px;
+	height: 22px;
+}
+
+.vmv-card-title {
+	margin-top: 20px;
+	color: #0a1128;
+	font-size: 1.2rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.vmv-card-text {
+	margin-top: 12px;
+	color: #6b7280;
+	font-size: 14.5px;
+	line-height: 1.7;
+}
+
+/* --- Chips de valores --- */
+
+.vmv-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	/* margin-top auto los deja al pie de la tarjeta */
+	margin-top: auto;
+	padding-top: 22px;
+}
+
+.vmv-chip {
+	padding: 7px 14px;
+	border: 1px solid rgba(45, 61, 185, 0.18);
+	border-radius: 999px;
+	background-color: rgba(45, 61, 185, 0.07);
+	color: #2d3db9;
+	font-size: 12.5px;
+	font-weight: 600;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.historia,
+	.compromiso,
+	.infra,
+	.vmv {
+		padding: 80px 30px;
+	}
+
+	.historia-container,
+	.infra-container,
+	.compromiso-container {
+		grid-template-columns: 1fr;
+		gap: 45px;
+	}
+
+	/* La foto abre cada bloque en pantallas medianas y pequenas */
+	.historia-imagen {
+		order: -1;
+	}
+
+	.historia-parrafo,
+	.infra-parrafo,
+	.compromiso-parrafo {
+		max-width: none;
+	}
+
+	/* 4 cifras en 2x2 antes de apilarse del todo */
+	.infra-stats {
+		grid-template-columns: repeat(2, 1fr);
+		margin-top: 50px;
+	}
+
+	.infra-stat:nth-child(3) {
+		border-left: none;
+	}
+
+	.infra-stat:nth-child(n + 3) {
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.vmv-grid {
+		grid-template-columns: 1fr;
+		gap: 22px;
+		margin-top: 45px;
+	}
+}
+
+@media (max-width: 600px) {
+	.historia,
+	.compromiso,
+	.infra,
+	.vmv {
+		padding: 62px 20px;
+	}
+
+	.compromiso-card {
+		padding: 30px 24px 32px;
+	}
+
+	.compromiso-comillas {
+		font-size: 4.6rem;
+		top: -10px;
+	}
+
+	.compromiso-cita {
+		padding-top: 36px;
+	}
+
+	.infra-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.infra-stat {
+		border-left: none;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 24px 20px;
+	}
+
+	.infra-stat:first-child {
+		border-top: none;
+	}
+
+	.vmv-card {
+		padding: 28px 24px 30px;
+	}
+}

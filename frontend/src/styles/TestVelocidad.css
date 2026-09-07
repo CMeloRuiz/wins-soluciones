@@ -1,0 +1,156 @@
+/* ===== Seccion Test de velocidad ===== */
+/* Fondo blanco: alterna con "Testimonios" (oscuro) y se distingue del gris
+   de "Servicios destacados" para que no se lean como la misma seccion */
+
+.test-velocidad {
+	background-color: #fff;
+	padding: 110px 50px;
+}
+
+.test-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 70px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* ===== Imagen ===== */
+
+.test-imagen {
+	position: relative;
+	border-radius: 16px;
+	overflow: hidden;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	box-shadow: 0 25px 55px rgba(10, 17, 40, 0.13);
+}
+
+.test-imagen img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+}
+
+/* Velo azul muy leve: integra la foto con la paleta de marca */
+.test-imagen::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: linear-gradient(140deg, rgba(45, 61, 185, 0.12) 0%, rgba(10, 17, 40, 0) 55%);
+}
+
+/* ===== Texto ===== */
+
+.test-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(10, 17, 40, 0.1);
+	border-radius: 999px;
+	background-color: #f4f5f7;
+	color: #3b465e;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.test-badge-icon {
+	color: #2d3db9;
+	font-size: 10px;
+	line-height: 1;
+}
+
+.test-title {
+	margin-top: 24px;
+	max-width: 16ch;
+	color: #0a1128;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.test-description {
+	margin-top: 20px;
+	max-width: 50ch;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+/* ===== Boton ===== */
+
+.test-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 32px;
+	padding: 15px 34px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14.5px;
+	font-weight: 600;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(45, 61, 185, 0.28);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.test-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	box-shadow: 0 10px 28px rgba(45, 61, 185, 0.42);
+	transform: translateY(-2px);
+}
+
+.test-btn-arrow {
+	transition: transform 0.3s ease;
+}
+
+.test-btn:hover .test-btn-arrow {
+	transform: translateX(4px);
+}
+
+.test-nota {
+	margin-top: 14px;
+	color: #9ca3af;
+	font-size: 12.5px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.test-velocidad {
+		padding: 90px 30px;
+	}
+
+	.test-container {
+		grid-template-columns: 1fr;
+		gap: 45px;
+	}
+
+	.test-title,
+	.test-description {
+		max-width: none;
+	}
+}
+
+@media (max-width: 600px) {
+	.test-velocidad {
+		padding: 70px 20px;
+	}
+
+	.test-btn {
+		width: 100%;
+		justify-content: center;
+		margin-top: 28px;
+	}
+
+	.test-nota {
+		text-align: center;
+	}
+}

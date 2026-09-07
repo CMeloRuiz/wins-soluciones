@@ -1,0 +1,176 @@
+/* ===== Footer ===== */
+/* Mismo azul oscuro del header, Hero y Nosotros */
+
+.footer {
+	position: relative;
+	background-color: #0a1128;
+	padding: 80px 50px 0;
+	/* Separador superior: la seccion previa es clara */
+	border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.footer-container {
+	display: grid;
+	/* La columna de marca pesa mas que las de enlaces */
+	grid-template-columns: 1.6fr 1fr 1fr 1fr;
+	gap: 60px;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding-bottom: 60px;
+}
+
+/* ===== Marca ===== */
+
+.footer-logo {
+	display: inline-block;
+	border-radius: 8px;
+	overflow: hidden;
+	line-height: 0;
+}
+
+.footer-logo img {
+	display: block;
+	width: 150px;
+	height: auto;
+}
+
+.footer-tagline {
+	margin-top: 20px;
+	max-width: 34ch;
+	color: #9ca3af;
+	font-size: 14px;
+	line-height: 1.7;
+}
+
+/* ===== Redes sociales ===== */
+
+.footer-redes {
+	display: flex;
+	gap: 10px;
+	margin-top: 26px;
+}
+
+/* Mismo lenguaje que el boton secundario del Hero */
+.footer-red {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 10px;
+	background-color: rgba(255, 255, 255, 0.05);
+	color: #c5cbdd;
+	transition: all 0.3s ease;
+}
+
+.footer-red svg {
+	width: 17px;
+	height: 17px;
+}
+
+.footer-red:hover {
+	background-color: #2d3db9;
+	border-color: #2d3db9;
+	color: #fff;
+	transform: translateY(-2px);
+}
+
+/* ===== Columnas de enlaces ===== */
+
+.footer-col-title {
+	color: #fff;
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0.2px;
+}
+
+.footer-col-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 20px;
+}
+
+/* Gris claro con hover a blanco, igual que la navegacion del Header */
+.footer-col-list a {
+	color: #c5cbdd;
+	font-size: 14px;
+	transition: color 0.3s ease;
+}
+
+.footer-col-list a:hover {
+	color: #fff;
+}
+
+/* ===== Fila inferior ===== */
+
+.footer-bottom {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 24px 0 28px;
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-bottom p {
+	color: #9ca3af;
+	font-size: 13px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.footer {
+		padding: 70px 30px 0;
+	}
+
+	.footer-container {
+		/* La marca ocupa el ancho completo y los enlaces quedan en 3 columnas */
+		grid-template-columns: repeat(3, 1fr);
+		gap: 45px 30px;
+	}
+
+	.footer-brand {
+		grid-column: 1 / -1;
+	}
+
+	.footer-tagline {
+		max-width: 46ch;
+	}
+}
+
+@media (max-width: 600px) {
+	.footer {
+		padding: 55px 20px 0;
+		text-align: center;
+	}
+
+	.footer-container {
+		grid-template-columns: 1fr;
+		gap: 38px;
+		padding-bottom: 45px;
+	}
+
+	/* Logo y redes centrados en movil */
+	.footer-tagline {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.footer-redes {
+		justify-content: center;
+	}
+
+	.footer-col-list {
+		gap: 11px;
+		margin-top: 16px;
+	}
+
+	.footer-bottom {
+		padding: 22px 0 26px;
+	}
+
+	.footer-bottom p {
+		font-size: 12.5px;
+	}
+}

@@ -1,0 +1,364 @@
+/* ===== Base compartida por las paginas de servicio =====
+ *
+ * Reune los patrones que se repiten en las cinco paginas: seccion, encabezado,
+ * grilla de tarjetas, bloque de imagen + texto y listas con check.
+ * Cada pagina solo aporta despues sus rasgos propios en su CSS.
+ *
+ * Prefijo "srv-" para no chocar con las clases de las secciones del Home.
+ */
+
+/* ===== Seccion ===== */
+
+.srv {
+	position: relative;
+	padding: 100px 50px;
+}
+
+.srv--claro {
+	background-color: #fff;
+}
+
+.srv--gris {
+	background-color: #f4f5f7;
+}
+
+.srv--oscuro {
+	background-color: #0a1128;
+	overflow: hidden;
+}
+
+/* Bloom azul, el mismo recurso del header y del PageHero */
+.srv--oscuro::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(65% 55% at 15% 0%, rgba(45, 61, 185, 0.16) 0%, rgba(10, 17, 40, 0) 65%);
+}
+
+.srv-container {
+	position: relative;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+/* ===== Encabezado de seccion ===== */
+
+.srv-header {
+	max-width: 660px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+/* Alineado a la izquierda cuando acompana a una imagen */
+.srv-header--izq {
+	margin: 0;
+	text-align: left;
+}
+
+.srv-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background-color: rgba(10, 17, 40, 0.55);
+	color: #d5d9e6;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.srv-badge-icon {
+	color: #5b6ee8;
+	font-size: 10px;
+	line-height: 1;
+}
+
+/* Variante para secciones de fondo claro */
+.srv-badge--claro {
+	border-color: rgba(10, 17, 40, 0.1);
+	background-color: #f4f5f7;
+	color: #3b465e;
+}
+
+.srv--gris .srv-badge--claro {
+	background-color: #fff;
+}
+
+.srv-badge--claro .srv-badge-icon {
+	color: #2d3db9;
+}
+
+.srv-title {
+	margin-top: 24px;
+	color: #fff;
+	font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.srv-title--oscuro {
+	color: #0a1128;
+}
+
+.srv-sub {
+	margin-top: 16px;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+.srv-sub--oscuro {
+	color: #6b7280;
+}
+
+/* Parrafo suelto dentro de un bloque de texto */
+.srv-parrafo {
+	margin-top: 18px;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.8;
+}
+
+.srv-parrafo--oscuro {
+	color: #6b7280;
+}
+
+/* ===== Grilla de tarjetas ===== */
+
+.srv-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 24px;
+	margin-top: 55px;
+}
+
+/* Fija el numero de columnas cuando el contenido lo pide */
+.srv-grid--3 {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.srv-grid--4 {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+/* Tarjeta sobre fondo claro: mismo tratamiento que "Servicios destacados" */
+.srv-card {
+	display: flex;
+	flex-direction: column;
+	padding: 30px 26px 32px;
+	background-color: #fff;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	border-radius: 16px;
+	box-shadow: 0 2px 6px rgba(10, 17, 40, 0.04);
+	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.srv-card:hover {
+	transform: translateY(-6px);
+	border-color: rgba(45, 61, 185, 0.25);
+	box-shadow: 0 20px 40px rgba(10, 17, 40, 0.13);
+}
+
+.srv-card-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 46px;
+	height: 46px;
+	border-radius: 12px;
+	background-color: rgba(45, 61, 185, 0.1);
+	color: #2d3db9;
+}
+
+.srv-card-icon svg {
+	width: 22px;
+	height: 22px;
+}
+
+.srv-card-title {
+	margin-top: 20px;
+	color: #0a1128;
+	font-size: 1.08rem;
+	font-weight: 700;
+	letter-spacing: -0.2px;
+}
+
+.srv-card-text {
+	margin-top: 10px;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.7;
+}
+
+/* --- Tarjeta sobre fondo oscuro --- */
+
+.srv--oscuro .srv-card {
+	background-color: rgba(255, 255, 255, 0.04);
+	border-color: rgba(255, 255, 255, 0.09);
+	box-shadow: none;
+}
+
+.srv--oscuro .srv-card:hover {
+	background-color: rgba(255, 255, 255, 0.07);
+	border-color: rgba(45, 61, 185, 0.5);
+	box-shadow: 0 20px 40px rgba(4, 8, 20, 0.45);
+}
+
+.srv--oscuro .srv-card-icon {
+	background-color: rgba(45, 61, 185, 0.18);
+	color: #8f9dff;
+}
+
+.srv--oscuro .srv-card-title {
+	color: #fff;
+}
+
+.srv--oscuro .srv-card-text {
+	color: #9ca3af;
+}
+
+/* ===== Bloque de imagen + texto ===== */
+
+.srv-split {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 70px;
+}
+
+/* Invierte el orden para alternar bloques consecutivos */
+.srv-split--invertido .srv-imagen {
+	order: -1;
+}
+
+.srv-imagen {
+	position: relative;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.srv-imagen img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+}
+
+.srv--claro .srv-imagen,
+.srv--gris .srv-imagen {
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	box-shadow: 0 25px 55px rgba(10, 17, 40, 0.14);
+}
+
+.srv--oscuro .srv-imagen {
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 25px 55px rgba(4, 8, 20, 0.55);
+}
+
+/* Velo azul: integra la foto con la paleta de marca */
+.srv-imagen::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: linear-gradient(140deg, rgba(45, 61, 185, 0.14) 0%, rgba(10, 17, 40, 0) 55%);
+}
+
+.srv--oscuro .srv-imagen::after {
+	background:
+		linear-gradient(180deg, rgba(10, 17, 40, 0.3) 0%, rgba(10, 17, 40, 0) 30%, rgba(10, 17, 40, 0.4) 100%),
+		linear-gradient(90deg, rgba(10, 17, 40, 0.3) 0%, rgba(10, 17, 40, 0) 30%);
+}
+
+/* ===== Lista con check ===== */
+
+.srv-lista {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin-top: 28px;
+}
+
+.srv-lista li {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	color: #6b7280;
+	font-size: 14.5px;
+	line-height: 1.65;
+}
+
+.srv--oscuro .srv-lista li {
+	color: #c5cbdd;
+}
+
+.srv-lista-check {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 22px;
+	height: 22px;
+	/* Alinea el icono con la primera linea del texto */
+	margin-top: 1px;
+	border-radius: 50%;
+	background-color: rgba(45, 61, 185, 0.12);
+	color: #2d3db9;
+}
+
+.srv--oscuro .srv-lista-check {
+	background-color: rgba(45, 61, 185, 0.25);
+	color: #8f9dff;
+}
+
+.srv-lista-check svg {
+	width: 12px;
+	height: 12px;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.srv {
+		padding: 80px 30px;
+	}
+
+	.srv-grid,
+	.srv-grid--3,
+	.srv-grid--4 {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 20px;
+		margin-top: 45px;
+	}
+
+	.srv-split {
+		grid-template-columns: 1fr;
+		gap: 45px;
+	}
+
+	/* En una sola columna la imagen siempre abre el bloque */
+	.srv-split .srv-imagen {
+		order: -1;
+	}
+}
+
+@media (max-width: 700px) {
+	.srv {
+		padding: 62px 20px;
+	}
+
+	.srv-grid,
+	.srv-grid--3,
+	.srv-grid--4 {
+		grid-template-columns: 1fr;
+		gap: 18px;
+		margin-top: 38px;
+	}
+
+	.srv-card {
+		padding: 26px 22px 28px;
+	}
+}

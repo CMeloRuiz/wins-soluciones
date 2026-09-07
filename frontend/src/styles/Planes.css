@@ -1,0 +1,313 @@
+/* ===== Planes =====
+ *
+ * La tarjeta central usa naranja como unica excepcion cromatica del sitio:
+ * es un recurso deliberado para dirigir la atencion al plan recomendado.
+ * Las laterales se mantienen neutras para no competir con ella.
+ */
+
+.planes {
+	padding: 100px 50px;
+}
+
+.planes--gris {
+	background-color: #f4f5f7;
+}
+
+.planes--claro {
+	background-color: #fff;
+}
+
+/* Sin fondo propio: hereda el de la seccion que lo contiene */
+.planes--ninguno {
+	padding: 0;
+	background-color: transparent;
+}
+
+.planes-container {
+	max-width: 1140px;
+	margin: 0 auto;
+}
+
+.planes-header {
+	max-width: 620px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.planes-title {
+	color: #0a1128;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.planes-sub {
+	margin-top: 16px;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+/* ===== Grilla ===== */
+
+.planes-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	/* align-items start: la tarjeta destacada sobresale sin estirar a las otras */
+	align-items: start;
+	gap: 26px;
+	margin-top: 60px;
+}
+
+/* ===== Tarjeta ===== */
+
+.plan-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 38px 30px 34px;
+	background-color: #fff;
+	border: 1px solid rgba(10, 17, 40, 0.08);
+	border-radius: 16px;
+	box-shadow: 0 2px 8px rgba(10, 17, 40, 0.05);
+	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease,
+		opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.planes--claro .plan-card {
+	background-color: #f8f9fb;
+}
+
+.plan-card:hover {
+	transform: translateY(-6px);
+	border-color: rgba(45, 61, 185, 0.25);
+	box-shadow: 0 20px 40px rgba(10, 17, 40, 0.13);
+}
+
+/* --- Tarjeta destacada ---
+ * Se duplica la clase (.plan-card.plan-card--destacado) para igualar la
+ * especificidad de ".planes--claro .plan-card", que si no le ganaba y le
+ * devolvia el fondo gris de las tarjetas laterales.
+ */
+
+.plan-card.plan-card--destacado {
+	background-color: #cf4a12;
+	border-color: #cf4a12;
+	/* Sobresale por encima de las laterales */
+	padding: 46px 32px 40px;
+	box-shadow: 0 22px 45px rgba(207, 74, 18, 0.32);
+}
+
+.plan-card.plan-card--destacado:hover {
+	border-color: #cf4a12;
+	box-shadow: 0 28px 55px rgba(207, 74, 18, 0.42);
+}
+
+/* La animacion de aparicion mueve el eje Y, asi que el hover se suma sin saltos */
+.plan-card--destacado.is-visible {
+	transform: none;
+}
+
+.plan-etiqueta {
+	position: absolute;
+	top: 18px;
+	right: 18px;
+	padding: 5px 12px;
+	border-radius: 999px;
+	/* Velo oscuro en vez de claro: aclarar el naranja bajaba el contraste a 3.24:1 */
+	background-color: rgba(0, 0, 0, 0.22);
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+}
+
+/* ===== Contenido ===== */
+
+.plan-nombre {
+	color: #0a1128;
+	font-size: 1.5rem;
+	font-weight: 800;
+	letter-spacing: -0.5px;
+}
+
+.plan-card--destacado .plan-nombre {
+	color: #fff;
+}
+
+.plan-precio {
+	display: flex;
+	align-items: baseline;
+	gap: 2px;
+	margin-top: 14px;
+	color: #2d3db9;
+	font-size: 2.1rem;
+	font-weight: 800;
+	letter-spacing: -1px;
+	font-variant-numeric: tabular-nums;
+}
+
+.plan-card--destacado .plan-precio {
+	color: #fff;
+}
+
+.plan-precio-moneda {
+	font-size: 1.3rem;
+	font-weight: 700;
+}
+
+.plan-precio-periodo {
+	margin-left: 4px;
+	color: #6b7280;
+	font-size: 0.92rem;
+	font-weight: 500;
+	letter-spacing: 0;
+}
+
+.plan-card--destacado .plan-precio-periodo {
+	/* Blanco solido: al 85% de opacidad sobre el naranja bajaba a 3.69:1 */
+	color: #fff;
+}
+
+/* --- Lista de caracteristicas --- */
+
+.plan-lista {
+	display: flex;
+	flex-direction: column;
+	gap: 13px;
+	margin-top: 26px;
+	padding-top: 24px;
+	border-top: 1px solid rgba(10, 17, 40, 0.08);
+}
+
+.plan-card--destacado .plan-lista {
+	border-top-color: rgba(255, 255, 255, 0.28);
+}
+
+.plan-lista li {
+	display: flex;
+	align-items: flex-start;
+	gap: 11px;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.plan-card--destacado .plan-lista li {
+	color: #fff;
+}
+
+.plan-check {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	/* Alinea el check con la primera linea del texto */
+	margin-top: 1px;
+	border-radius: 50%;
+	background-color: rgba(45, 61, 185, 0.12);
+	color: #2d3db9;
+}
+
+.plan-card--destacado .plan-check {
+	background-color: rgba(255, 255, 255, 0.25);
+	color: #fff;
+}
+
+.plan-check svg {
+	width: 11px;
+	height: 11px;
+}
+
+/* ===== Boton ===== */
+
+.plan-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* margin-top auto: los botones quedan alineados entre tarjetas */
+	margin-top: auto;
+	padding: 13px 28px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+/* La lista empuja el boton al pie sin pegarse a el */
+.plan-lista + .plan-btn {
+	margin-top: 30px;
+}
+
+.plan-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	color: #fff;
+	transform: translateY(-2px);
+}
+
+/* Invertido sobre el naranja */
+.plan-card--destacado .plan-btn {
+	background-color: #fff;
+	border-color: #fff;
+	color: #b8420f;
+}
+
+.plan-card--destacado .plan-btn:hover {
+	background-color: #fff5f1;
+	border-color: #fff5f1;
+	color: #8f3109;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.planes {
+		padding: 80px 30px;
+	}
+
+	.planes--ninguno {
+		padding: 0;
+	}
+
+	.planes-grid {
+		grid-template-columns: 1fr;
+		gap: 22px;
+		margin-top: 45px;
+		max-width: 460px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	/* Apiladas, el padding extra de la destacada descuadraria la columna */
+	.plan-card--destacado {
+		padding: 38px 30px 34px;
+	}
+}
+
+@media (max-width: 600px) {
+	.planes {
+		padding: 62px 20px;
+	}
+
+	.planes--ninguno {
+		padding: 0;
+	}
+
+	.plan-card,
+	.plan-card--destacado {
+		padding: 32px 24px 30px;
+	}
+
+	.plan-precio {
+		font-size: 1.9rem;
+	}
+}

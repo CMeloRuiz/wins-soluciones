@@ -1,0 +1,221 @@
+/* ===== Seccion Hero ===== */
+
+.hero {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: calc(100vh - 95px);
+	padding: 90px 50px 70px;
+	overflow: hidden;
+	background-image: url('../assets/images/hero_background.jpg');
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+/* Overlay oscuro (azul + gris) sobre la imagen para dar contraste al texto */
+.hero::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background:
+		radial-gradient(circle at 50% 20%, rgba(45, 61, 185, 0.25) 0%, rgba(10, 17, 40, 0) 55%),
+		linear-gradient(160deg, rgba(10, 17, 40, 0.94) 0%, rgba(28, 28, 28, 0.9) 50%, rgba(41, 41, 41, 0.95) 100%);
+}
+
+.hero-content {
+	width: 100%;
+	max-width: 900px;
+	text-align: center;
+}
+
+/* ===== Badge ===== */
+
+.hero-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background-color: rgba(10, 17, 40, 0.55);
+	backdrop-filter: blur(6px);
+	color: #d5d9e6;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.hero-badge-icon {
+	font-size: 14px;
+	line-height: 1;
+}
+
+/* ===== Textos ===== */
+
+.hero-title {
+	margin-top: 28px;
+	color: #fff;
+	font-size: clamp(2.2rem, 5.5vw, 4rem);
+	font-weight: 800;
+	line-height: 1.1;
+	letter-spacing: -1px;
+}
+
+.hero-subtitle {
+	margin-top: 22px;
+	color: #d5d9e6;
+	font-size: clamp(1rem, 2vw, 1.35rem);
+	font-weight: 600;
+}
+
+.hero-description {
+	max-width: 600px;
+	margin: 14px auto 0;
+	color: #9ca3af;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1.6;
+}
+
+/* ===== Botones ===== */
+
+.hero-actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
+	margin-top: 36px;
+	flex-wrap: wrap;
+}
+
+.hero-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 13px 30px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.hero-btn-primary {
+	background-color: #2d3db9;
+	border: 1px solid #2d3db9;
+	color: #fafafa;
+}
+
+.hero-btn-primary:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	transform: translateY(-2px);
+}
+
+.hero-btn-secondary {
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	color: #fff;
+}
+
+.hero-btn-secondary:hover {
+	background-color: rgba(255, 255, 255, 0.12);
+	border-color: rgba(255, 255, 255, 0.3);
+	transform: translateY(-2px);
+}
+
+/* ===== Barra de estadisticas ===== */
+
+.hero-stats {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	margin-top: 70px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 12px;
+	background-color: rgba(10, 12, 20, 0.82);
+	overflow: hidden;
+}
+
+.hero-stat {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	padding: 28px 20px;
+	/* Linea vertical sutil de separacion entre columnas */
+	border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-stat:first-child {
+	border-left: none;
+}
+
+.hero-stat-number {
+	color: #fff;
+	font-size: clamp(1.6rem, 3vw, 2.2rem);
+	font-weight: 700;
+	line-height: 1;
+	/* Evita que el ancho salte mientras corre el conteo */
+	font-variant-numeric: tabular-nums;
+}
+
+.hero-stat-label {
+	color: #9ca3af;
+	font-size: 11px;
+	font-weight: 500;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 900px) {
+	.hero {
+		padding: 70px 30px 60px;
+	}
+
+	.hero-stats {
+		margin-top: 50px;
+	}
+}
+
+@media (max-width: 600px) {
+	.hero {
+		padding: 55px 20px 50px;
+		min-height: auto;
+	}
+
+	.hero-badge {
+		font-size: 12px;
+		padding: 7px 14px;
+	}
+
+	.hero-actions {
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.hero-btn {
+		width: 100%;
+		justify-content: center;
+	}
+
+	/* Las stats se apilan en una sola columna */
+	.hero-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.hero-stat {
+		border-left: none;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 22px 20px;
+	}
+
+	.hero-stat:first-child {
+		border-top: none;
+	}
+}

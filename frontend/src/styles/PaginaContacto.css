@@ -1,0 +1,570 @@
+.contacto-principal {
+	position: relative;
+	isolation: isolate;
+	padding: 100px 50px;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.contacto-principal::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background:
+		radial-gradient(60% 55% at 88% 0%, rgba(45, 61, 185, 0.35) 0%, rgba(10, 17, 40, 0) 62%),
+		linear-gradient(155deg, rgba(10, 17, 40, 0.95) 0%, rgba(17, 28, 46, 0.9) 48%, rgba(13, 27, 42, 0.96) 100%);
+}
+
+.contacto-container {
+	display: grid;
+	/* El formulario pesa un poco mas: tiene campos pareados y necesita mas aire
+	   que la columna de informacion. */
+	grid-template-columns: 0.94fr 1.06fr;
+	align-items: start;
+	gap: 50px;
+	/* Mas angosto que el resto de secciones (1200px) a proposito: deja ver
+	   la imagen de fondo a los lados del contenido. */
+	max-width: 1080px;
+	margin: 0 auto;
+}
+
+/* ===== Columna de informacion ===== */
+
+.contacto-title {
+	color: #fff;
+	font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+	max-width: 16ch;
+}
+
+.contacto-intro {
+	margin-top: 18px;
+	max-width: 46ch;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.75;
+}
+
+/* --- WhatsApp: accion directa, tratada como CTA --- */
+
+.contacto-whatsapp {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	margin-top: 30px;
+	padding: 16px 22px;
+	border: 1px solid rgba(255, 255, 255, 0.14);
+	border-radius: 12px;
+	background-color: rgba(255, 255, 255, 0.06);
+	transition: all 0.3s ease;
+}
+
+.contacto-whatsapp:hover {
+	background-color: rgba(45, 61, 185, 0.22);
+	border-color: rgba(45, 61, 185, 0.5);
+	transform: translateY(-2px);
+}
+
+.contacto-whatsapp-icon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: #8f9dff;
+}
+
+.contacto-whatsapp-icon svg {
+	width: 26px;
+	height: 26px;
+}
+
+.contacto-whatsapp-texto {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.contacto-whatsapp-texto strong {
+	color: #fff;
+	font-size: 14.5px;
+	font-weight: 600;
+}
+
+.contacto-whatsapp-texto span {
+	color: #9ca3af;
+	font-size: 13px;
+}
+
+.contacto-whatsapp-arrow {
+	margin-left: auto;
+	color: #c5cbdd;
+	transition: transform 0.3s ease;
+}
+
+.contacto-whatsapp:hover .contacto-whatsapp-arrow {
+	transform: translateX(4px);
+}
+
+/* --- Grilla de datos --- */
+
+.contacto-datos {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 26px 30px;
+	margin-top: 36px;
+	padding-top: 34px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contacto-dato-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 10px;
+	background-color: rgba(45, 61, 185, 0.16);
+	color: #8f9dff;
+}
+
+.contacto-dato-icon svg {
+	width: 18px;
+	height: 18px;
+}
+
+.contacto-dato h3 {
+	margin-top: 14px;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.contacto-dato p {
+	margin-top: 8px;
+	color: #c5cbdd;
+	font-size: 13.5px;
+	line-height: 1.75;
+}
+
+.contacto-dato a {
+	color: #c5cbdd;
+	transition: color 0.3s ease;
+}
+
+.contacto-dato a:hover {
+	color: #fff;
+}
+
+/* ===== Formulario ===== */
+
+.contacto-form-card {
+	padding: 34px 32px 36px;
+	border: 1px solid rgba(255, 255, 255, 0.55);
+	border-radius: 16px;
+	background-color: #fff;
+	box-shadow: 0 30px 60px rgba(4, 8, 20, 0.4);
+}
+
+.contacto-form-title {
+	color: #0a1128;
+	font-size: 1.22rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.contacto-form-sub {
+	margin-top: 7px;
+	color: #6b7280;
+	font-size: 13.5px;
+	line-height: 1.6;
+}
+
+/* Separa el encabezado del primer campo sin depender del margen del campo */
+.contacto-form-sub + .contacto-fila,
+.contacto-form-sub + .contacto-campo {
+	margin-top: 26px;
+}
+
+.contacto-form {
+	display: flex;
+	flex-direction: column;
+}
+
+.contacto-fila {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px;
+	margin-top: 16px;
+}
+
+.contacto-campo {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 16px;
+	border: none;
+	padding: 0;
+}
+
+/* Dentro de una fila, el margen lo pone la fila y no cada campo */
+.contacto-fila .contacto-campo {
+	margin-top: 0;
+}
+
+/*
+ * Hijo directo a proposito: los chips tambien son <label> dentro de
+ * .contacto-campo, y con el selector descendente esta regla les ganaba en
+ * especificidad (0,2,0 contra 0,1,0) y les anulaba padding, peso y color.
+ * Los chips cuelgan de .contacto-chips, asi que ">" los deja fuera.
+ */
+.contacto-campo > label,
+.contacto-campo > legend {
+	color: #3b465e;
+	font-size: 12.5px;
+	font-weight: 600;
+	line-height: 1;
+	padding: 0;
+}
+
+.contacto-campo input,
+.contacto-campo textarea {
+	width: 100%;
+	padding: 11px 13px;
+	border: 1px solid rgba(10, 17, 40, 0.14);
+	border-radius: 8px;
+	background-color: #f8f9fb;
+	color: #0a1128;
+	font-size: 13.5px;
+	font-family: inherit;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.contacto-campo textarea {
+	resize: vertical;
+	min-height: 100px;
+	line-height: 1.6;
+}
+
+.contacto-campo input::placeholder,
+.contacto-campo textarea::placeholder {
+	color: #9ca3af;
+}
+
+/* Foco visible: requisito de accesibilidad al navegar con teclado */
+.contacto-campo input:focus,
+.contacto-campo textarea:focus {
+	outline: none;
+	background-color: #fff;
+	border-color: #2d3db9;
+	box-shadow: 0 0 0 3px rgba(45, 61, 185, 0.15);
+}
+
+/* --- Chips de servicio --- */
+
+.contacto-chips-grupo {
+	gap: 11px;
+}
+
+.contacto-chips {
+	margin-top: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 9px;
+}
+
+/*
+ * Dos ajustes necesarios aqui:
+ *
+ * 1. El chip es un <label>, que por defecto es "display: inline", y en un
+ *    elemento inline el padding vertical no expande la caja de linea.
+ *    Con inline-flex la pastilla si crece y el texto se centra en ambos ejes.
+ *
+ * 2. Como flex item heredaba "flex-shrink: 1": al no caber la fila se
+ *    comprimia por debajo de su ancho natural y, con nowrap, el texto se
+ *    desbordaba sobre el padding. Con flex-shrink 0 conserva su ancho y
+ *    simplemente pasa a la linea siguiente.
+ */
+.contacto-chip {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	/* Altura fija: todas las pastillas miden igual aunque el texto varie */
+	height: 36px;
+	padding: 0 17px;
+	border: 1px solid rgba(10, 17, 40, 0.14);
+	border-radius: 999px;
+	background-color: #f8f9fb;
+	color: #3b465e;
+	font-size: 12.5px;
+	font-weight: 500;
+	line-height: 1;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: all 0.25s ease;
+}
+
+/* El radio real queda oculto pero accesible por teclado */
+.contacto-chip input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.contacto-chip:hover {
+	border-color: rgba(45, 61, 185, 0.4);
+	color: #2d3db9;
+}
+
+.contacto-chip.is-activo {
+	background-color: #2d3db9;
+	border-color: #2d3db9;
+	color: #fff;
+}
+
+/* Marca el foco del teclado sobre el chip contenedor */
+.contacto-chip:focus-within {
+	box-shadow: 0 0 0 3px rgba(45, 61, 185, 0.2);
+}
+
+/* --- Boton --- */
+
+.contacto-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: 100%;
+	margin-top: 24px;
+	padding: 13px 28px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14.5px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(45, 61, 185, 0.28);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.contacto-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	box-shadow: 0 10px 28px rgba(45, 61, 185, 0.42);
+	transform: translateY(-2px);
+}
+
+.contacto-btn-arrow {
+	transition: transform 0.3s ease;
+}
+
+.contacto-btn:hover .contacto-btn-arrow {
+	transform: translateX(4px);
+}
+
+.contacto-btn--secundario {
+	background-color: transparent;
+	border-color: rgba(10, 17, 40, 0.18);
+	color: #2d3db9;
+	box-shadow: none;
+}
+
+.contacto-btn--secundario:hover {
+	background-color: rgba(45, 61, 185, 0.08);
+	border-color: rgba(45, 61, 185, 0.4);
+	box-shadow: none;
+}
+
+/* --- Confirmacion de envio --- */
+
+.contacto-exito {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	padding: 26px 0;
+}
+
+.contacto-exito-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	margin-bottom: 22px;
+	border-radius: 50%;
+	background-color: rgba(45, 61, 185, 0.1);
+	color: #2d3db9;
+}
+
+.contacto-exito-icon svg {
+	width: 26px;
+	height: 26px;
+}
+
+.contacto-exito .contacto-form-sub {
+	max-width: 38ch;
+}
+
+.contacto-exito .contacto-btn {
+	width: auto;
+	margin-top: 28px;
+}
+
+/* ===== Bloque de mapa ===== */
+
+.contacto-mapa {
+	background-color: #f4f5f7;
+	padding: 100px 50px;
+}
+
+.contacto-mapa-container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.contacto-mapa-header {
+	max-width: 640px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.contacto-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 18px;
+	border: 1px solid rgba(10, 17, 40, 0.1);
+	border-radius: 999px;
+	background-color: #fff;
+	color: #3b465e;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.contacto-badge-icon {
+	color: #2d3db9;
+	font-size: 10px;
+	line-height: 1;
+}
+
+.contacto-mapa-title {
+	margin-top: 24px;
+	color: #0a1128;
+	font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.8px;
+}
+
+.contacto-mapa-sub {
+	margin-top: 16px;
+	color: #6b7280;
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+/* Mismo tratamiento que las demas imagenes del sitio */
+.contacto-mapa-marco {
+	margin-top: 50px;
+	border: 1px solid rgba(10, 17, 40, 0.07);
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 25px 55px rgba(10, 17, 40, 0.14);
+	line-height: 0;
+}
+
+.contacto-mapa-marco iframe {
+	display: block;
+	width: 100%;
+	height: 430px;
+	border: 0;
+}
+
+.contacto-mapa-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 22px;
+	color: #2d3db9;
+	font-size: 14px;
+	font-weight: 600;
+	transition: color 0.3s ease;
+}
+
+.contacto-mapa-link:hover {
+	color: #1e2a8a;
+}
+
+.contacto-mapa-link span {
+	transition: transform 0.3s ease;
+}
+
+.contacto-mapa-link:hover span {
+	transform: translateX(4px);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.contacto-principal,
+	.contacto-mapa {
+		padding: 80px 30px;
+	}
+
+	/* Informacion arriba, formulario debajo */
+	.contacto-container {
+		grid-template-columns: 1fr;
+		gap: 45px;
+	}
+
+	.contacto-title,
+	.contacto-intro {
+		max-width: none;
+	}
+
+	.contacto-mapa-marco {
+		margin-top: 40px;
+	}
+
+	.contacto-mapa-marco iframe {
+		height: 380px;
+	}
+}
+
+@media (max-width: 600px) {
+	.contacto-principal,
+	.contacto-mapa {
+		padding: 62px 20px;
+	}
+
+	.contacto-datos {
+		grid-template-columns: 1fr;
+		gap: 24px;
+	}
+
+	.contacto-form-card {
+		padding: 26px 22px 30px;
+	}
+
+	/* Los campos pareados pasan a una sola columna */
+	.contacto-fila {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+
+	.contacto-whatsapp {
+		padding: 14px 18px;
+	}
+
+	.contacto-mapa-marco iframe {
+		height: 300px;
+	}
+}
