@@ -1,0 +1,29 @@
+# Blueprint de Render para WINS Soluciones
+# Sitio estatico generado con Vite. Se despliega desde la raiz del repositorio,
+# compilando el proyecto que vive en frontend/.
+#
+# Para usarlo: en Render -> New -> Blueprint, y apuntar al repositorio.
+
+services:
+  - type: web
+    name: wins-soluciones
+    env: static
+    # Render ejecuta el build desde la raiz del repo, por eso el "cd frontend"
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+
+    # Enrutamiento SPA: React Router maneja las rutas del lado del cliente, asi
+    # que cualquier peticion que no corresponda a un archivo estatico debe
+    # devolver index.html. Sin esto, recargar /nosotros o /servicios/... da 404.
+    # Va como respaldo del archivo frontend/public/_redirects.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    headers:
+      # Los assets de Vite llevan hash en el nombre, asi que se pueden cachear
+      # de forma indefinida sin riesgo de servir una version vieja.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
