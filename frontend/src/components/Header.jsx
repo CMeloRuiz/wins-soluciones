@@ -71,7 +71,8 @@ function Header() {
 							))}
 						</ul>
 					</li>
-					<a href="#" onClick={closeMenu}>cobertura</a>
+					{/* Ancla al bloque de cobertura del Home; ScrollToTop la resuelve */}
+					<Link to="/#cobertura" onClick={closeMenu}>cobertura</Link>
 					<Link to="/nosotros" onClick={closeMenu}>nosotros</Link>
 					<a href="#" onClick={closeMenu}>pqr y soporte</a>
 					<a href="#" onClick={closeMenu}>pago en linea</a>

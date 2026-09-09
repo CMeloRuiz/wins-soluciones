@@ -198,6 +198,13 @@ export const IconMantenimiento = () => (
 	</svg>
 )
 
+export const IconPin = () => (
+	<svg {...base}>
+		<path d="M20 10c0 6-8 11.5-8 11.5S4 16 4 10a8 8 0 0 1 16 0z" />
+		<circle cx="12" cy="10" r="2.8" />
+	</svg>
+)
+
 export const IconCheck = () => (
 	<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
 		<path d="m4.5 12.5 5 5 10-10" />

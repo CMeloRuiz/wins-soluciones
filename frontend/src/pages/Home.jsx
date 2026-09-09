@@ -2,6 +2,7 @@ import Header from '../components/Header';
 import Hero from '../components/Hero';
 import Nosotros from '../components/Nosotros';
 import ServiciosDestacados from '../components/ServiciosDestacados';
+import Cobertura from '../components/Cobertura';
 import Planes from '../components/Planes';
 import Testimonios from '../components/Testimonios';
 import TestVelocidad from '../components/TestVelocidad';
@@ -15,7 +16,8 @@ function Home() {
       <Hero />
       <Nosotros />
       <ServiciosDestacados />
-      {/* Fondo blanco: Servicios destacados ya usa el gris claro */}
+      <Cobertura />
+      {/* Fondo blanco: Cobertura y Servicios destacados usan gris y azul oscuro */}
       <Planes fondo="claro" />
       <Testimonios />
       <TestVelocidad />

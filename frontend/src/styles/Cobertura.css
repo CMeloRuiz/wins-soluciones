@@ -1,0 +1,571 @@
+/* ===== Seccion Cobertura =====
+ *
+ * Fondo azul oscuro, alternando con "Servicios destacados" (gris) antes y
+ * "Planes" (blanco) despues.
+ *
+ * Codigo de color del mapa: todos los municipios del departamento van en gris
+ * y solo los que tienen servicio van en verde. Asi el verde significa
+ * "cobertura" por si mismo, sin necesidad de leyenda.
+ */
+
+.cobertura {
+	position: relative;
+	background-color: #0a1128;
+	padding: 100px 50px;
+	overflow: hidden;
+}
+
+.cobertura::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(58% 50% at 70% 4%, rgba(35, 134, 74, 0.14) 0%, rgba(10, 17, 40, 0) 62%);
+}
+
+.cob-container {
+	position: relative;
+	max-width: 1160px;
+	margin: 0 auto;
+}
+
+/* ===== Encabezado ===== */
+
+.cob-title {
+	color: #fff;
+	font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+	font-weight: 800;
+	line-height: 1.2;
+	letter-spacing: -0.8px;
+}
+
+.cob-sub {
+	margin-top: 16px;
+	max-width: 62ch;
+	color: #9ca3af;
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+/* ===== Tabs de departamento ===== */
+
+.cob-tabs {
+	display: flex;
+	gap: 30px;
+	margin-top: 34px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cob-tab {
+	position: relative;
+	padding: 0 2px 14px;
+	border: none;
+	background: none;
+	color: #9ca3af;
+	font-size: 15px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	transition: color 0.3s ease;
+}
+
+.cob-tab:hover {
+	color: #d5d9e6;
+}
+
+.cob-tab.is-activo {
+	color: #fff;
+}
+
+/* Subrayado del tab activo */
+.cob-tab::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -1px;
+	height: 2px;
+	border-radius: 2px;
+	background-color: #2e9d5c;
+	transform: scaleX(0);
+	transition: transform 0.3s ease;
+}
+
+.cob-tab.is-activo::after {
+	transform: scaleX(1);
+}
+
+/* ===== Bloque del mapa =====
+ *
+ * Un solo recuadro a ancho completo: el mapa a la izquierda y el panel de
+ * informacion fijo a la derecha. El panel no flota, asi que el usuario puede
+ * leerlo sin que se cierre y cabe sin barra de scroll.
+ */
+
+.cob-bloque {
+	margin-top: 26px;
+}
+
+.cob-mapa-card {
+	display: grid;
+	grid-template-columns: 1fr 370px;
+	align-items: stretch;
+	gap: 28px;
+	padding: 22px;
+	border: 1px solid rgba(255, 255, 255, 0.09);
+	border-radius: 18px;
+	/* Degradado suave en lugar de un gris plano */
+	background: linear-gradient(160deg, #f6f9fc 0%, #e4ebf4 100%);
+	box-shadow: 0 22px 50px rgba(4, 8, 20, 0.42);
+	transition: opacity 0.22s ease;
+}
+
+.cob-mapa-card--salida {
+	opacity: 0;
+}
+
+/*
+ * La zona tiene alto fijo y el SVG se ajusta dentro con "meet", asi el mapa
+ * completo siempre cabe y ningun municipio queda cortado. El overflow oculto
+ * es una red de seguridad: si en algun ancho el dibujo se pasara del hueco,
+ * se recorta en lugar de empujar el layout.
+ */
+.cob-mapa-zona {
+	position: relative;
+	height: 500px;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.cob-mapa {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* ===== Geometria del mapa ===== */
+
+/*
+ * "non-scaling-stroke": el grosor se mide en pixeles de pantalla y no en
+ * unidades del viewBox, asi los dos departamentos tienen el mismo trazo.
+ */
+.cob-muni,
+.cob-muni-base {
+	vector-effect: non-scaling-stroke;
+}
+
+/* --- Municipios sin cobertura ---
+ * Son la base del mapa: gris claro con un borde tenue que separa a los
+ * vecinos. El contorno del departamento sale de la union de sus bordes, sin
+ * dibujar una silueta aparte. No reciben eventos, para que el hover llegue a
+ * los municipios con servicio y al fondo de la zona.
+ */
+.cob-muni-base {
+	fill: #e5e5e5;
+	stroke: #999;
+	stroke-width: 0.7;
+	stroke-linejoin: round;
+	pointer-events: none;
+}
+
+/* --- Municipios con cobertura --- */
+
+.cob-muni {
+	fill: url(#cob-g-muni-m);
+	/* Borde claro: separa municipios colindantes, que es lo que los hacia
+	   leerse como una sola mancha */
+	stroke: #f4f9f6;
+	stroke-width: 1.6;
+	stroke-linejoin: round;
+	cursor: pointer;
+	transition: fill 0.28s ease, filter 0.28s ease;
+}
+
+.cob-muni:hover,
+.cob-muni.is-activo {
+	fill: url(#cob-g-muni-act-m);
+}
+
+.cob-muni.is-activo {
+	stroke: #fff;
+	stroke-width: 2;
+	filter: drop-shadow(0 0 7px rgba(46, 157, 92, 0.75));
+}
+
+.cob-muni:focus {
+	outline: none;
+}
+
+.cob-muni:focus-visible {
+	stroke: #0a1128;
+	stroke-width: 3;
+}
+
+/* ===== Panel de informacion ===== */
+
+.cob-panel {
+	display: flex;
+	flex-direction: column;
+	padding: 22px;
+	border: 1px solid rgba(10, 17, 40, 0.08);
+	border-radius: 14px;
+	background-color: #fff;
+	box-shadow: 0 6px 20px rgba(10, 25, 45, 0.08);
+}
+
+/* --- Selector de municipio --- */
+
+.cob-selector {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	padding-bottom: 16px;
+	margin-bottom: 16px;
+	border-bottom: 1px solid rgba(10, 17, 40, 0.08);
+}
+
+.cob-selector-btn {
+	padding: 6px 12px;
+	border: 1px solid rgba(10, 17, 40, 0.14);
+	border-radius: 999px;
+	background-color: #f5f8fa;
+	color: #3b465e;
+	font-size: 12px;
+	font-weight: 600;
+	font-family: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: all 0.25s ease;
+}
+
+.cob-selector-btn:hover {
+	border-color: rgba(46, 157, 92, 0.5);
+	color: #145c31;
+}
+
+.cob-selector-btn.is-activo {
+	background-color: #1b6b3a;
+	border-color: #1b6b3a;
+	color: #fff;
+}
+
+/* Ocupa el alto restante para que el estado vacio quede centrado */
+.cob-panel-cuerpo {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.cob-ficha-titulo {
+	color: #0a1128;
+	font-size: 1.12rem;
+	font-weight: 700;
+	letter-spacing: -0.2px;
+}
+
+.cob-ficha-depto {
+	margin-top: 2px;
+	color: #6b7280;
+	font-size: 12px;
+}
+
+.cob-ficha-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	margin-top: 12px;
+	padding: 5px 12px;
+	border-radius: 999px;
+	background-color: rgba(27, 107, 58, 0.1);
+	color: #145c31;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+}
+
+.cob-ficha-badge-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background-color: #1b6b3a;
+	color: #fff;
+}
+
+.cob-ficha-badge-icon svg {
+	width: 8px;
+	height: 8px;
+}
+
+.cob-ficha-conteo {
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(10, 17, 40, 0.08);
+	color: #6b7280;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+/* Dos columnas y sin scroll: se ven todas las veredas de una vez */
+.cob-veredas {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 5px 14px;
+	margin-top: 10px;
+}
+
+.cob-veredas li {
+	position: relative;
+	padding-left: 12px;
+	color: #3b465e;
+	font-size: 12.5px;
+	line-height: 1.5;
+}
+
+/* Vineta pequena, en lugar del marcador nativo */
+.cob-veredas li::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 7px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50%;
+	background-color: #2e9d5c;
+}
+
+.cob-ficha-nota {
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(10, 17, 40, 0.08);
+	color: #3b465e;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+/* --- Panel sin seleccion --- */
+
+.cob-panel-vacio {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	text-align: center;
+	padding: 14px 0;
+}
+
+.cob-panel-vacio-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 54px;
+	height: 54px;
+	margin-bottom: 16px;
+	border-radius: 50%;
+	background-color: rgba(46, 157, 92, 0.12);
+	color: #2e9d5c;
+}
+
+.cob-panel-vacio-icon svg {
+	width: 26px;
+	height: 26px;
+}
+
+.cob-panel-vacio-texto {
+	max-width: 32ch;
+	margin-top: 10px;
+	color: #6b7280;
+	font-size: 13px;
+	line-height: 1.65;
+}
+
+/* ===== Pie del bloque ===== */
+
+.cob-pie {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 14px;
+	flex-wrap: wrap;
+	margin-top: 14px;
+	padding: 0 4px;
+}
+
+.cob-pie-depto {
+	color: #d5d9e6;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+}
+
+.cob-pie-ayuda {
+	color: #9ca3af;
+	font-size: 12.5px;
+}
+
+/* ===== Cierre ===== */
+
+.cob-cierre {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	flex-wrap: wrap;
+	margin-top: 40px;
+	padding: 22px 28px;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 14px;
+	background-color: rgba(255, 255, 255, 0.03);
+}
+
+.cob-cierre p {
+	color: #c5cbdd;
+	font-size: 14.5px;
+}
+
+.cob-cierre-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	padding: 12px 26px;
+	border: 1px solid #2d3db9;
+	border-radius: 8px;
+	background-color: #2d3db9;
+	color: #fafafa;
+	font-size: 14px;
+	font-weight: 600;
+	white-space: nowrap;
+	transition: all 0.3s ease;
+}
+
+.cob-cierre-btn:hover {
+	background-color: #3a4bd6;
+	border-color: #3a4bd6;
+	color: #fff;
+	transform: translateY(-2px);
+}
+
+.cob-cierre-btn span {
+	transition: transform 0.3s ease;
+}
+
+.cob-cierre-btn:hover span {
+	transform: translateX(4px);
+}
+
+/* ===== Accesibilidad ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.cob-muni,
+	.cob-selector-btn,
+	.cob-mapa-card,
+	.cob-tab::after {
+		transition: none;
+	}
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1000px) {
+	.cobertura {
+		padding: 80px 30px;
+	}
+
+	.cob-mapa-card {
+		grid-template-columns: 1fr 320px;
+		gap: 20px;
+		padding: 18px;
+	}
+
+	.cob-mapa-zona {
+		height: 540px;
+	}
+}
+
+/*
+ * En vertical el panel pasa debajo del mapa, a ancho completo. Ahi las veredas
+ * caben en tres columnas y siguen sin necesitar scroll.
+ */
+@media (max-width: 820px) {
+	.cob-mapa-card {
+		grid-template-columns: 1fr;
+		gap: 18px;
+	}
+
+	.cob-panel {
+		min-height: 0;
+	}
+
+	.cob-veredas {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.cob-panel-vacio {
+		padding: 6px 0;
+	}
+
+	.cob-panel-vacio-icon {
+		width: 46px;
+		height: 46px;
+		margin-bottom: 12px;
+	}
+}
+
+@media (max-width: 640px) {
+	.cobertura {
+		padding: 62px 20px;
+	}
+
+	.cob-tabs {
+		gap: 22px;
+	}
+
+	.cob-mapa-card {
+		padding: 14px;
+	}
+
+	.cob-mapa-zona {
+		height: 430px;
+	}
+
+	.cob-panel {
+		padding: 18px 16px;
+	}
+
+	.cob-veredas {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.cob-veredas li {
+		font-size: 12px;
+	}
+
+	/* El nombre del departamento y la ayuda se apilan */
+	.cob-pie {
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		text-align: center;
+	}
+
+	.cob-cierre {
+		flex-direction: column;
+		text-align: center;
+		gap: 16px;
+		padding: 22px 20px;
+	}
+
+	.cob-cierre-btn {
+		width: 100%;
+		justify-content: center;
+	}
+}
