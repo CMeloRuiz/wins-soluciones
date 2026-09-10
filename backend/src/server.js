@@ -1,8 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import { config } from './config/entorno.js'
-import { CARPETA_SUBIDAS } from './controllers/imagenesControlador.js'
 import { verificarConexion } from './config/db.js'
+import { hayCloudinary } from './config/imagenes.js'
 import { noEncontrado, manejadorErrores } from './middleware/errores.js'
 
 import rutasAuth from './routes/auth.js'
@@ -39,8 +39,10 @@ app.use((req, res, siguiente) => {
 
 app.use(express.json({ limit: '1mb' }))
 
-/* Imagenes subidas desde el panel */
-app.use('/uploads', express.static(CARPETA_SUBIDAS, { maxAge: '7d' }))
+/*
+ * Las imagenes subidas ya no se sirven desde aqui: viven en Cloudinary y el
+ * contenido guarda su URL completa. Por eso no hay carpeta estatica.
+ */
 
 app.get('/api/salud', (req, res) => res.json({ ok: true, hora: new Date().toISOString() }))
 
@@ -62,5 +64,11 @@ app.listen(config.puerto, async () => {
 	console.log(`  Origenes permitidos: ${config.origenes.join(', ')}`)
 
 	await verificarConexion()
+
+	if (!hayCloudinary) {
+		console.warn('[imagenes] AVISO: faltan las credenciales de Cloudinary.')
+		console.warn('[imagenes] El sitio funciona, pero el panel no podra cambiar imagenes.')
+	}
+
 	console.log('')
 })

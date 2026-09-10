@@ -3,7 +3,8 @@
 API que da servicio al panel administrativo (`/admin` en el sitio) y entrega
 el contenido editable al sitio publico.
 
-Node.js + Express + PostgreSQL (Neon). Ver [Persistencia](#persistencia).
+Node.js + Express. El contenido se guarda en PostgreSQL (Neon) y las imagenes
+en Cloudinary. Ver [Persistencia](#persistencia).
 
 ---
 
@@ -42,6 +43,9 @@ Todas viven en `.env`, que **no** se sube al repositorio. La plantilla es
 | `ADMIN_CLAVE` | alternativa | Clave en texto plano. El servidor la hashea al arrancar. Comodo para empezar, pero deja la clave legible en el archivo. |
 | `MAX_IMAGEN_MB` | no | Tamano maximo por imagen. Por defecto `4`. |
 | `DATABASE_URL` | **si** | Cadena de conexion de PostgreSQL en Neon. Ver abajo. |
+| `CLOUDINARY_CLOUD_NAME` | para imagenes | Nombre de la cuenta de Cloudinary. |
+| `CLOUDINARY_API_KEY` | para imagenes | Clave publica de la API. |
+| `CLOUDINARY_API_SECRET` | para imagenes | Secreto de la API. |
 
 Generar el secreto de sesion:
 
@@ -78,6 +82,16 @@ avisa por consola; las rutas de contenido responden `503` con el motivo, y
 explicacion es mas dificil de diagnosticar que uno que responde diciendo que
 le falta la base de datos.
 
+### Credenciales de Cloudinary
+
+Las tres salen del Dashboard de [Cloudinary](https://cloudinary.com), en
+**API Keys**. El plan gratuito no pide tarjeta y da 25 GB de almacenamiento y
+25 GB de trafico al mes, muy por encima de lo que necesitan tres imagenes.
+
+Sin ellas el servidor tambien arranca: el sitio publico se ve igual, porque
+usa las imagenes que trae empaquetadas, y solo la pestana de imagenes del
+panel responde `503` explicando que falta configurarlo.
+
 ---
 
 ## Estructura
@@ -86,11 +100,11 @@ le falta la base de datos.
 backend/
   db/schema.sql            Definicion de la tabla. Se ejecuta una vez.
   data/contenido.json      Respaldo historico. Ya NO se usa en caliente.
-  uploads/                 Imagenes subidas desde el panel.
   src/
     config/
       entorno.js           Lee y valida las variables de entorno.
       db.js                Pool de conexiones y traduccion de fallos a 503.
+      imagenes.js          Subida y borrado en Cloudinary.
     models/
       almacen.js           Unico punto de acceso a la base de datos.
       contenidoInicial.js  Contenido de fabrica, para sembrar y restaurar.
@@ -252,6 +266,9 @@ repositorio, y una vez guardados quedan cifrados en Render:
 | `ADMIN_USUARIO` | wins-api | El usuario del panel |
 | `ADMIN_CLAVE_HASH` | wins-api | El hash, nunca la clave |
 | `ORIGENES_PERMITIDOS` | wins-api | La URL del sitio publicado |
+| `CLOUDINARY_CLOUD_NAME` | wins-api | Del Dashboard de Cloudinary |
+| `CLOUDINARY_API_KEY` | wins-api | Del Dashboard de Cloudinary |
+| `CLOUDINARY_API_SECRET` | wins-api | Del Dashboard de Cloudinary |
 | `VITE_API_URL` | wins-soluciones | La URL de `wins-api` |
 
 `JWT_SECRETO` lo genera Render solo; no hay que inventarlo.
@@ -278,22 +295,18 @@ Si el panel dice que no puede conectarse, lo primero que hay que mirar es
 `ORIGENES_PERMITIDOS`: cuando el origen no coincide, la API responde 403 y
 deja en su log el origen que rechazo.
 
-### Lo que sigue siendo efimero
+### Nada queda en el disco del servicio
 
-El contenido ya no se pierde entre despliegues: vive en Neon, fuera de Render.
+Ni el contenido ni las imagenes viven en el contenedor de Render, asi que un
+redespliegue no se lleva nada por delante:
 
-Lo que **si** se sigue perdiendo son las **imagenes subidas desde el panel**.
-Se guardan en `uploads/` dentro del contenedor, y el disco de un Web Service
-en Render es efimero salvo que se conecte un disco persistente. Tras un
-redespliegue, las rutas quedan apuntando en la base a archivos que ya no
-existen.
+| Que | Donde vive |
+|---|---|
+| Textos, municipios y veredas | PostgreSQL en Neon |
+| Imagenes subidas desde el panel | Cloudinary |
+| Imagenes por defecto del sitio | El propio bundle del frontend |
 
-Para resolverlo hay dos caminos, ninguno hecho todavia:
+Antes las imagenes se guardaban en `uploads/` dentro del contenedor y se
+perdian en cada despliegue, dejando la base apuntando a archivos que ya no
+existian. Esa carpeta ya no se usa.
 
-- conectar un disco persistente al Web Service, o
-- subir las imagenes a un servicio de objetos (Cloudinary, S3, Supabase
-  Storage) y guardar en la base la URL en vez de la ruta local.
-
-Mientras tanto, el panel sigue funcionando y basta con volver a subir las
-imagenes despues de un despliegue. Las que trae el sitio por defecto no se ven
-afectadas: son parte del frontend.

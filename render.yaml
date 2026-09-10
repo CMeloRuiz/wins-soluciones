@@ -87,3 +87,15 @@ services:
 
       - key: MAX_IMAGEN_MB
         value: "4"
+
+      # Las imagenes del panel se guardan en Cloudinary y no en el disco del
+      # servicio, que Render vacia en cada despliegue. Los tres valores salen
+      # del Dashboard de Cloudinary, en "API Keys".
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+
+      - key: CLOUDINARY_API_KEY
+        sync: false
+
+      - key: CLOUDINARY_API_SECRET
+        sync: false

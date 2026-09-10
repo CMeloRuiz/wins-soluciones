@@ -22,11 +22,17 @@ export function useContenido() {
 }
 
 /**
- * Convierte una ruta de imagen del backend ("/uploads/x.jpg") en URL completa.
- * Si no hay imagen subida devuelve null y el componente usa la suya.
+ * URL de una imagen subida desde el panel, o null si no hay ninguna y el
+ * componente debe usar la suya.
+ *
+ * Hoy el backend guarda la URL completa de Cloudinary, asi que se devuelve
+ * tal cual. Se sigue aceptando una ruta relativa ("/uploads/x.jpg") porque es
+ * lo que guardaba la version anterior, cuando las imagenes vivian en el disco
+ * del servidor: asi un contenido antiguo no se queda sin imagen.
  */
 export function urlDeImagen(ruta) {
-	return ruta ? `${API}${ruta}` : null
+	if (!ruta) return null
+	return /^https?:\/\//.test(ruta) ? ruta : `${API}${ruta}`
 }
 
 export default useContenido

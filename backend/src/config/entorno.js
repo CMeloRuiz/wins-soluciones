@@ -63,6 +63,17 @@ export const config = {
 	/* Limite de subida de imagenes, en megabytes */
 	maxImagenMb: Number(process.env.MAX_IMAGEN_MB) || 4,
 
+	/*
+	 * Cloudinary guarda las imagenes que se suben desde el panel. Como con la
+	 * base de datos, si falta no se corta el arranque: el sitio publico no las
+	 * necesita, y el panel avisa cuando alguien intenta usarlas.
+	 */
+	cloudinary: {
+		nombre: process.env.CLOUDINARY_CLOUD_NAME || '',
+		clave: process.env.CLOUDINARY_API_KEY || '',
+		secreto: process.env.CLOUDINARY_API_SECRET || '',
+	},
+
 	baseDatos: {
 		/*
 		 * Cadena de conexion de Neon. No se usa requerida(): si falta, el

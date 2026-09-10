@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Reveal from './Reveal'
+import { useContenido, urlDeImagen } from '../hooks/useContenido'
 import '../styles/Nosotros.css'
 import equipo from '../assets/images/nosotros_equipo.jpg'
 
@@ -38,6 +39,10 @@ const VALORES = [
 ]
 
 function Nosotros() {
+	/* La que haya subido el administrador; si no hay, la del propio sitio */
+	const remoto = useContenido()
+	const imagen = urlDeImagen(remoto?.imagenes?.nosotrosEquipo) ?? equipo
+
 	return (
 		<section className="nosotros" id="nosotros">
 			<div className="nosotros-container">
@@ -78,7 +83,7 @@ function Nosotros() {
 
 				{/* Columna de imagen: entra despues del texto, como en Planes */}
 				<Reveal className="nosotros-imagen" delay={110}>
-					<img src={equipo} alt="Equipo tecnico de WINS Soluciones trabajando con fibra optica" loading="lazy" decoding="async" />
+					<img src={imagen} alt="Equipo tecnico de WINS Soluciones trabajando con fibra optica" loading="lazy" decoding="async" />
 				</Reveal>
 			</div>
 		</section>

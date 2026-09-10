@@ -1,16 +1,7 @@
 import multer from 'multer'
-import { extname, join, dirname, basename } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { randomUUID } from 'node:crypto'
-import { unlink } from 'node:fs/promises'
-import { existsSync, mkdirSync } from 'node:fs'
 import { config } from '../config/entorno.js'
+import { subir, borrar } from '../config/imagenes.js'
 import { leer, guardarSeccion } from '../models/almacen.js'
-
-const AQUI = dirname(fileURLToPath(import.meta.url))
-export const CARPETA_SUBIDAS = join(AQUI, '..', '..', 'uploads')
-
-if (!existsSync(CARPETA_SUBIDAS)) mkdirSync(CARPETA_SUBIDAS, { recursive: true })
 
 /* Las claves que el panel puede reemplazar */
 const RANURAS = {
@@ -21,20 +12,15 @@ const RANURAS = {
 
 const TIPOS = ['image/jpeg', 'image/png', 'image/webp']
 
-/**
- * Guarda con un nombre generado, nunca con el que trae el archivo: un nombre
- * de origen podria contener rutas ("../") y escribir fuera de la carpeta.
+/*
+ * El archivo se queda en memoria y de ahi va a Cloudinary. Antes se escribia
+ * en disco, pero en Render ese disco se vacia en cada despliegue. Ademas, al
+ * no tocar el sistema de archivos desaparecen los casos raros que habia que
+ * cuidar: nombres con "../", archivos huerfanos si la peticion fallaba a
+ * mitad, y la carpeta uploads creciendo sin control.
  */
-const almacenamiento = multer.diskStorage({
-	destination: (req, file, cb) => cb(null, CARPETA_SUBIDAS),
-	filename: (req, file, cb) => {
-		const extension = extname(file.originalname).toLowerCase().slice(0, 5) || '.jpg'
-		cb(null, `${Date.now()}-${randomUUID().slice(0, 8)}${extension}`)
-	},
-})
-
 export const subida = multer({
-	storage: almacenamiento,
+	storage: multer.memoryStorage(),
 	limits: { fileSize: config.maxImagenMb * 1024 * 1024, files: 1 },
 	fileFilter: (req, file, cb) => {
 		if (!TIPOS.includes(file.mimetype)) {
@@ -46,43 +32,18 @@ export const subida = multer({
 	},
 }).single('imagen')
 
-/** Borra el archivo anterior para que la carpeta no crezca sin control */
-async function borrarAnterior(ruta) {
-	if (!ruta || !ruta.startsWith('/uploads/')) return
+function exigirRanura(ranura) {
+	if (RANURAS[ranura]) return
 
-	try {
-		await unlink(join(CARPETA_SUBIDAS, basename(ruta)))
-	} catch {
-		/* Si ya no esta, no hay nada que limpiar */
-	}
-}
-
-/** Borra un archivo recien subido que al final no se va a usar */
-async function descartar(archivo) {
-	if (!archivo) return
-
-	try {
-		await unlink(archivo.path)
-	} catch {
-		/* Si no llego a escribirse, no hay nada que descartar */
-	}
+	const error = new Error(`"${ranura}" no es una imagen editable`)
+	error.status = 400
+	throw error
 }
 
 export async function reemplazarImagen(req, res) {
 	const { ranura } = req.params
 
-	/*
-	 * Multer guarda el archivo antes de que corra este controlador, asi que
-	 * si la ranura no vale hay que borrar lo que acaba de escribir: de lo
-	 * contrario quedaria en uploads sin que nadie lo referencie.
-	 */
-	if (!RANURAS[ranura]) {
-		await descartar(req.file)
-
-		const error = new Error(`"${ranura}" no es una imagen editable`)
-		error.status = 400
-		throw error
-	}
+	exigirRanura(ranura)
 
 	if (!req.file) {
 		const error = new Error('No llego ninguna imagen')
@@ -90,10 +51,15 @@ export async function reemplazarImagen(req, res) {
 		throw error
 	}
 
-	const contenido = await leer()
-	await borrarAnterior(contenido.imagenes[ranura])
+	/*
+	 * Se sube antes de tocar la base: si Cloudinary falla, se propaga el error
+	 * y el contenido guardado sigue apuntando a la imagen anterior, que sigue
+	 * existiendo. Nunca queda una ruta escrita hacia una imagen que no esta.
+	 */
+	const url = await subir(req.file.buffer, ranura)
 
-	const imagenes = { ...contenido.imagenes, [ranura]: `/uploads/${req.file.filename}` }
+	const contenido = await leer()
+	const imagenes = { ...contenido.imagenes, [ranura]: url }
 	const guardadas = await guardarSeccion('imagenes', imagenes)
 
 	res.json({ ranura, ruta: guardadas[ranura], imagenes: guardadas })
@@ -103,14 +69,12 @@ export async function reemplazarImagen(req, res) {
 export async function restablecerImagen(req, res) {
 	const { ranura } = req.params
 
-	if (!RANURAS[ranura]) {
-		const error = new Error(`"${ranura}" no es una imagen editable`)
-		error.status = 400
-		throw error
-	}
+	exigirRanura(ranura)
 
 	const contenido = await leer()
-	await borrarAnterior(contenido.imagenes[ranura])
+
+	/* Solo hay algo que borrar si esta ranura tenia imagen propia */
+	if (contenido.imagenes[ranura]) await borrar(ranura)
 
 	const imagenes = { ...contenido.imagenes, [ranura]: null }
 	res.json({ ranura, ruta: null, imagenes: await guardarSeccion('imagenes', imagenes) })

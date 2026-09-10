@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import PageHero from '../components/PageHero'
+import { useContenido, urlDeImagen } from '../hooks/useContenido'
 import '../styles/PaginaContacto.css'
 
 import fondoContacto from '../assets/images/contact/contact_background.jpg'
@@ -62,6 +63,10 @@ const IconHorario = () => (
 )
 
 function PaginaContacto() {
+	/* El fondo que haya subido el administrador; si no, el del propio sitio */
+	const remoto = useContenido()
+	const fondo = urlDeImagen(remoto?.imagenes?.contactoFondo) ?? fondoContacto
+
 	const [form, setForm] = useState({
 		nombre: '',
 		apellido: '',
@@ -99,7 +104,7 @@ function PaginaContacto() {
 			{/* ===== Bloque principal: informacion + formulario ===== */}
 			<section
 				className="contacto-principal"
-				style={{ backgroundImage: `url(${fondoContacto})` }}
+				style={{ backgroundImage: `url(${fondo})` }}
 			>
 				<div className="contacto-container">
 					{/* --- Columna de informacion --- */}
