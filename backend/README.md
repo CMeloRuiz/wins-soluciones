@@ -224,19 +224,59 @@ En el frontend esto se configura con `VITE_API_URL` (ver `frontend/.env.example`
 El sitio publico esta en Render como Static Site. Este backend necesita un
 servicio aparte, de tipo Web Service, porque es un proceso que corre siempre.
 
-Al configurarlo:
+Los dos servicios estan declarados en el [`render.yaml`](../render.yaml) de
+la raiz: el sitio estatico (`wins-soluciones`) y esta API (`wins-api`).
 
-1. Root directory: `backend`
-2. Build command: `npm install`
-3. Start command: `npm start`
-4. Variables de entorno: las de la tabla de arriba, con `DATABASE_URL`
-   incluida (la cadena *pooled* de Neon).
-5. `ORIGENES_PERMITIDOS` con la URL del sitio publicado.
-6. Antes del primer arranque, ejecuta `npm run db:crear` y `npm run migrar`
-   contra la base de Neon. Se puede hacer desde tu equipo, poniendo la misma
-   `DATABASE_URL` en tu `.env` local: la base es la misma.
-7. En el Static Site del frontend, agrega `VITE_API_URL` con la URL de este
-   servicio y vuelve a desplegar.
+### Antes de desplegar
+
+Prepara la base de datos. Se hace **una sola vez y desde tu equipo**, con la
+`DATABASE_URL` de Neon en tu `.env` local, porque la base es la misma que
+usara Render:
+
+```bash
+cd backend
+npm run db:crear
+npm run migrar
+```
+
+Y ten a mano el hash de la clave del administrador (`npm run hash`).
+
+### Al aplicar el blueprint
+
+Render pide los valores marcados como `sync: false`. No estan en el
+repositorio, y una vez guardados quedan cifrados en Render:
+
+| Variable | Servicio | Que poner |
+|---|---|---|
+| `DATABASE_URL` | wins-api | La cadena *pooled* de Neon |
+| `ADMIN_USUARIO` | wins-api | El usuario del panel |
+| `ADMIN_CLAVE_HASH` | wins-api | El hash, nunca la clave |
+| `ORIGENES_PERMITIDOS` | wins-api | La URL del sitio publicado |
+| `VITE_API_URL` | wins-soluciones | La URL de `wins-api` |
+
+`JWT_SECRETO` lo genera Render solo; no hay que inventarlo.
+
+### El orden importa
+
+`ORIGENES_PERMITIDOS` y `VITE_API_URL` se necesitan mutuamente: cada servicio
+tiene que conocer la URL del otro, y esas URLs no existen hasta el primer
+despliegue. Asi que:
+
+1. Despliega. Las dos variables pueden quedar vacias de momento.
+2. Copia la URL de cada servicio ya desplegado.
+3. Rellena `ORIGENES_PERMITIDOS` en `wins-api` (**sin barra final**) y
+   `VITE_API_URL` en `wins-soluciones`.
+4. Vuelve a desplegar **el sitio estatico**. Vite incrusta `VITE_API_URL` en el
+   bundle durante el build, no la lee al ejecutarse, asi que cambiarla sin
+   reconstruir no surte efecto.
+
+Mientras tanto el sitio se ve igual que siempre: sin `VITE_API_URL` se pinta
+con el contenido que ya lleva escrito. Lo unico que no funciona todavia es el
+panel.
+
+Si el panel dice que no puede conectarse, lo primero que hay que mirar es
+`ORIGENES_PERMITIDOS`: cuando el origen no coincide, la API responde 403 y
+deja en su log el origen que rechazo.
 
 ### Lo que sigue siendo efimero
 

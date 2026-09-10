@@ -5,6 +5,9 @@
   "description": "API de contenido y autenticacion del panel administrativo de WINS Soluciones",
   "type": "module",
   "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
