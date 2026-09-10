@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useContenido, urlDeImagen } from '../hooks/useContenido'
 import '../styles/Hero.css'
 
 /**
@@ -37,12 +38,26 @@ function useCountUp(target, duration = 1800, start = false) {
 	return value
 }
 
-// Datos de la barra de estadisticas
-const STATS = [
-	{ value: 500, suffix: '+', label: 'Clientes conectados' },
-	{ value: 5, suffix: '+', label: 'Municipios con cobertura' },
-	{ value: 99, suffix: '%', label: 'Tiempo de actividad' },
-]
+/*
+ * Contenido de respaldo: es lo que se pinta mientras llega la respuesta de la
+ * API y lo que queda si el backend no esta disponible. Al editar el hero
+ * desde el panel administrativo, estos valores se sustituyen en caliente.
+ */
+const HERO_LOCAL = {
+	badge: 'Disfruta de una conexión de Internet potente y confiable en tu hogar',
+	tituloLinea1: 'Una conexion',
+	tituloLinea2: 'veloz y sin fronteras.',
+	subtitulo: 'Donde la velocidad y la confiabilidad se encuentran',
+	descripcion:
+		'Conéctate al mundo de forma rápida, segura y confiable. Descubre lo que el mundo digital puede ofrecerte  y navega sin límites con nuestro ISP.',
+	botonPrimario: 'Contacto',
+	botonSecundario: 'Cobertura',
+	estadisticas: [
+		{ valor: 500, sufijo: '+', etiqueta: 'Clientes conectados' },
+		{ valor: 5, sufijo: '+', etiqueta: 'Municipios con cobertura' },
+		{ valor: 99, sufijo: '%', etiqueta: 'Tiempo de actividad' },
+	],
+}
 
 /** Una columna de la barra de estadisticas */
 function StatItem({ value, suffix, label, isVisible }) {
@@ -62,6 +77,11 @@ function StatItem({ value, suffix, label, isVisible }) {
 function Hero() {
 	const statsRef = useRef(null)
 	const [isVisible, setIsVisible] = useState(false)
+
+	/* Lo que haya editado el administrador; si no hay API, el texto de siempre */
+	const remoto = useContenido()
+	const hero = remoto?.hero ?? HERO_LOCAL
+	const fondo = urlDeImagen(remoto?.imagenes?.heroFondo)
 
 	// Dispara la animacion cuando la barra de stats entra en el viewport
 	useEffect(() => {
@@ -84,43 +104,40 @@ function Hero() {
 	}, [])
 
 	return (
-		<section className="hero">
+		/* El estilo en linea solo se pone si hay imagen subida; si no, manda el CSS */
+		<section className="hero" style={fondo ? { backgroundImage: `url(${fondo})` } : undefined}>
 			<div className="hero-content">
 				<span className="hero-badge">
 					<span className="hero-badge-icon" aria-hidden="true">⚡</span>
-					Disfruta de una conexión de Internet potente y confiable en tu hogar
+					{hero.badge}
 				</span>
 
 				<h1 className="hero-title">
-					Una conexion
+					{hero.tituloLinea1}
 					<br />
-					veloz y sin fronteras.
+					{hero.tituloLinea2}
 				</h1>
 
-				<p className="hero-subtitle">
-					Donde la velocidad y la confiabilidad se encuentran
-				</p>
+				<p className="hero-subtitle">{hero.subtitulo}</p>
 
-				<p className="hero-description">
-					Conéctate al mundo de forma rápida, segura y confiable. Descubre lo que el mundo digital puede ofrecerte  y navega sin límites con nuestro ISP.
-				</p>
+				<p className="hero-description">{hero.descripcion}</p>
 
 				<div className="hero-actions">
 					<Link to="/contacto" className="hero-btn hero-btn-primary">
-						Contacto <span aria-hidden="true">&rarr;</span>
+						{hero.botonPrimario} <span aria-hidden="true">&rarr;</span>
 					</Link>
 					<a href="#cobertura" className="hero-btn hero-btn-secondary">
-						Cobertura
+						{hero.botonSecundario}
 					</a>
 				</div>
 
 				<div className="hero-stats" ref={statsRef}>
-					{STATS.map((stat) => (
+					{hero.estadisticas.map((stat) => (
 						<StatItem
-							key={stat.label}
-							value={stat.value}
-							suffix={stat.suffix}
-							label={stat.label}
+							key={stat.etiqueta}
+							value={stat.valor}
+							suffix={stat.sufijo}
+							label={stat.etiqueta}
 							isVisible={isVisible}
 						/>
 					))}

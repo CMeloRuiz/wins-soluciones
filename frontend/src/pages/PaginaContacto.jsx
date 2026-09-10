@@ -5,15 +5,13 @@ import PageHero from '../components/PageHero'
 import '../styles/PaginaContacto.css'
 
 import fondoContacto from '../assets/images/contact/contact_background.jpg'
+import { WHATSAPP, WHATSAPP_VISIBLE } from '../data/contacto'
 
 /* ===== Datos de contacto =====
  * La ubicacion corresponde a la sede real enlazada en Google Maps
  * (Villapinzon, Cundinamarca). Telefonos y correos son de ejemplo.
  */
 
-// Numero en formato internacional sin signos, requerido por wa.me
-const WHATSAPP = '573146429321'
-const WHATSAPP_VISIBLE = '+57 314 6429321'
 
 const MAPA_ENLACE = 'https://maps.app.goo.gl/tthmn7WQsRmUMiQu8'
 // Coordenadas de la sede; "output=embed" permite incrustar sin clave de API

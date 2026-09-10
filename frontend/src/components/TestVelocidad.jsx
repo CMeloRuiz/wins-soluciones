@@ -1,3 +1,4 @@
+import Reveal from './Reveal'
 import '../styles/TestVelocidad.css'
 import speedTest from '../assets/images/speed_test.jpg'
 
@@ -15,16 +16,16 @@ function TestVelocidad() {
 			<div className="test-container">
 				{/* Imagen a la izquierda: alterna respecto a "Nosotros",
 				    que lleva el texto de ese lado */}
-				<div className="test-imagen">
+				<Reveal className="test-imagen">
 					<img
 						src={speedTest}
 						alt="Medicion de velocidad de conexion a internet"
 						loading="lazy"
 						decoding="async"
 					/>
-				</div>
+				</Reveal>
 
-				<div className="test-texto">
+				<Reveal className="test-texto" delay={110}>
 					<span className="test-badge">
 						<span className="test-badge-icon" aria-hidden="true">◆</span>
 						Test de velocidad
@@ -48,7 +49,7 @@ function TestVelocidad() {
 					</a>
 
 					<p className="test-nota">Se abre en una pestana nueva</p>
-				</div>
+				</Reveal>
 			</div>
 		</section>
 	)

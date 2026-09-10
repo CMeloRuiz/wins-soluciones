@@ -1,0 +1,108 @@
+/* ===== Boton flotante de WhatsApp =====
+ *
+ * Fijo en la esquina inferior derecha, por encima del contenido pero por
+ * debajo del menu movil del Header (z-index 1000), para no taparlo.
+ */
+
+.wa-boton {
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	z-index: 900;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 58px;
+	height: 58px;
+	border-radius: 50%;
+	/* Verde oficial de WhatsApp: es lo que lo hace reconocible al instante */
+	background-color: #25d366;
+	color: #fff;
+	box-shadow: 0 6px 20px rgba(10, 17, 40, 0.28);
+	transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.wa-boton:hover {
+	transform: scale(1.08);
+	background-color: #20bd5a;
+	box-shadow: 0 10px 28px rgba(37, 211, 102, 0.45);
+}
+
+.wa-boton:active {
+	transform: scale(1.02);
+}
+
+.wa-boton:focus-visible {
+	outline: 3px solid #fff;
+	outline-offset: 3px;
+}
+
+.wa-icono {
+	position: relative;
+	z-index: 1;
+	width: 30px;
+	height: 30px;
+}
+
+/* --- Anillo que late ---
+ * Va detras del boton y se expande hasta desvanecerse. Es lento y de baja
+ * opacidad a proposito: llama la atencion sin competir con el contenido.
+ */
+.wa-pulso {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+	background-color: #25d366;
+	opacity: 0.65;
+	animation: wa-latido 2.6s ease-out infinite;
+}
+
+@keyframes wa-latido {
+	0% {
+		transform: scale(1);
+		opacity: 0.55;
+	}
+	70% {
+		transform: scale(1.75);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1.75);
+		opacity: 0;
+	}
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 700px) {
+	.wa-boton {
+		right: 16px;
+		bottom: 16px;
+		width: 52px;
+		height: 52px;
+	}
+
+	.wa-icono {
+		width: 27px;
+		height: 27px;
+	}
+}
+
+/* ===== Accesibilidad ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.wa-boton {
+		transition: none;
+	}
+
+	.wa-boton:hover {
+		transform: none;
+	}
+
+	/* Sin latido: es puramente decorativo */
+	.wa-pulso {
+		animation: none;
+		opacity: 0;
+	}
+}

@@ -111,11 +111,11 @@
 	grid-template-columns: 1fr 370px;
 	align-items: stretch;
 	gap: 28px;
-	padding: 22px;
+	padding: 10px;
 	border: 1px solid rgba(255, 255, 255, 0.09);
 	border-radius: 18px;
 	/* Degradado suave en lugar de un gris plano */
-	background: linear-gradient(160deg, #f6f9fc 0%, #e4ebf4 100%);
+	background: linear-gradient(160deg, #7d9ab6 0%, #393f47 100%);
 	box-shadow: 0 22px 50px rgba(4, 8, 20, 0.42);
 	transition: opacity 0.22s ease;
 }
@@ -130,10 +130,15 @@
  * es una red de seguridad: si en algun ancho el dibujo se pasara del hueco,
  * se recorta en lugar de empujar el layout.
  */
+/*
+ * Mismo tamano para los dos departamentos en todos los breakpoints. La
+ * diferencia de escala entre uno y otro se resuelve en el viewBox del SVG
+ * (ver ZOOM_DEPTO en Cobertura.jsx), nunca cambiando este contenedor.
+ */
 .cob-mapa-zona {
 	position: relative;
-	height: 500px;
-	min-width: 0;
+	height: 450px;
+	min-width: 0px;
 	overflow: hidden;
 }
 

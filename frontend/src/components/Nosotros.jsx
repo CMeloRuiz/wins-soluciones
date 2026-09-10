@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Reveal from './Reveal'
 import '../styles/Nosotros.css'
 import equipo from '../assets/images/nosotros_equipo.jpg'
 
@@ -41,7 +42,7 @@ function Nosotros() {
 		<section className="nosotros" id="nosotros">
 			<div className="nosotros-container">
 				{/* Columna de texto */}
-				<div className="nosotros-texto">
+				<Reveal className="nosotros-texto">
 					<span className="nosotros-badge">
 						<span className="nosotros-badge-icon" aria-hidden="true">◆</span>
 						Quienes somos
@@ -73,12 +74,12 @@ function Nosotros() {
 						Conocer mas sobre nosotros
 						<span className="nosotros-btn-arrow" aria-hidden="true">&rarr;</span>
 					</Link>
-				</div>
+				</Reveal>
 
-				{/* Columna de imagen */}
-				<div className="nosotros-imagen">
+				{/* Columna de imagen: entra despues del texto, como en Planes */}
+				<Reveal className="nosotros-imagen" delay={110}>
 					<img src={equipo} alt="Equipo tecnico de WINS Soluciones trabajando con fibra optica" loading="lazy" decoding="async" />
-				</div>
+				</Reveal>
 			</div>
 		</section>
 	)

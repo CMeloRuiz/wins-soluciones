@@ -57,12 +57,15 @@
 
 /* ===== Grilla de tarjetas ===== */
 
+/* Tres columnas iguales; al estrecharse pasan a dos y luego a una */
 .servicios-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 28px;
 	margin-top: 60px;
 }
+
+/* ===== Tarjeta ===== */
 
 .servicio-card {
 	display: flex;
@@ -72,7 +75,14 @@
 	border-radius: 16px;
 	overflow: hidden;
 	box-shadow: 0 2px 6px rgba(10, 17, 40, 0.04);
-	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+	/*
+	 * "transition" es una sola propiedad, asi que esta lista sustituye entera a
+	 * la de .reveal y hay que reponer aqui la opacidad de la aparicion; si no,
+	 * la tarjeta surgiria de golpe sin fundido. Mismos valores que .plan-card,
+	 * para que las dos grillas de tarjetas del inicio aparezcan igual.
+	 */
+	transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease,
+		opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .servicio-card:hover {
@@ -157,7 +167,7 @@
 		padding: 90px 30px;
 	}
 
-	/* Dos columnas: la tercera tarjeta pasa a la fila siguiente */
+	/* Dos columnas: a tres, la tarjeta se queda sin ancho para el texto */
 	.servicios-grid {
 		grid-template-columns: repeat(2, 1fr);
 		gap: 24px;
@@ -170,13 +180,22 @@
 		padding: 70px 20px;
 	}
 
+	/* Una sola columna: las tarjetas se apilan */
 	.servicios-grid {
 		grid-template-columns: 1fr;
-		gap: 22px;
+		gap: 18px;
 		margin-top: 40px;
 	}
 
 	.servicio-card-body {
 		padding: 22px 22px 24px;
+	}
+}
+
+/* Sin movimiento si el usuario lo pidio en el sistema */
+@media (prefers-reduced-motion: reduce) {
+	.servicio-card,
+	.servicio-card-media img {
+		transition: none;
 	}
 }

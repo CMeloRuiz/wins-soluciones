@@ -1,0 +1,9 @@
+node_modules/
+
+# Credenciales reales: nunca al repositorio
+.env
+
+# Contenido editado desde el panel y sus imagenes
+data/contenido.json
+uploads/*
+!uploads/.gitkeep

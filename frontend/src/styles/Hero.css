@@ -10,9 +10,18 @@
 	padding: 90px 50px 70px;
 	overflow: hidden;
 	background-image: url('../assets/images/hero_background.jpg');
+	/*
+	 * "cover" nunca deforma: reescala la imagen conservando su proporcion y
+	 * recorta lo que sobra. En escritorio la caja es mas apaisada que la imagen
+	 * (1.7 frente a 1.5), asi que el recorte cae arriba y abajo y el centrado
+	 * horizontal es el correcto. En movil se invierte, y el ajuste esta en la
+	 * media query de abajo.
+	 */
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	/* Color de respaldo mientras la imagen carga o si falla */
+	background-color: #0a1128;
 }
 
 /* Overlay oscuro (azul + gris) sobre la imagen para dar contraste al texto */
@@ -176,6 +185,17 @@
 @media (max-width: 900px) {
 	.hero {
 		padding: 70px 30px 60px;
+		/*
+		 * En vertical la caja es mas alta que ancha, asi que "cover" recorta por
+		 * los lados. El motivo de la foto no esta centrado: el tercio izquierdo
+		 * es casi blanco y el detalle se concentra entre el 58% y el 83% del
+		 * ancho. Centrando en el 50% la ventana visible caia en el 35-65% y
+		 * dejaba fuera casi todo el motivo; con el 72% la ventana pasa al
+		 * 52-81% y lo encuadra a cualquiera de estos anchos.
+		 *
+		 * Solo cambia el eje horizontal: en vertical se ve la imagen entera.
+		 */
+		background-position: 72% center;
 	}
 
 	.hero-stats {
@@ -186,7 +206,14 @@
 @media (max-width: 600px) {
 	.hero {
 		padding: 55px 20px 50px;
-		min-height: auto;
+		/*
+		 * Antes era "auto" y el alto lo marcaba solo el contenido: en 320px la
+		 * caja llegaba a 934px y quedaba con una proporcion de 0.34 frente al
+		 * 1.50 de la imagen, asi que "cover" la ampliaba hasta dejar visible
+		 * apenas una franja. Con svh se apoya en la altura real del viewport
+		 * en movil, descontando las barras del navegador.
+		 */
+		min-height: 100svh;
 	}
 
 	.hero-badge {
@@ -204,18 +231,27 @@
 		justify-content: center;
 	}
 
-	/* Las stats se apilan en una sola columna */
+	/*
+	 * Las stats se quedan en tres columnas. Apiladas median 279px y eran, con
+	 * diferencia, lo que mas estiraba el Hero hacia abajo: son las que hacian
+	 * que la imagen de fondo se recortara tanto.
+	 */
 	.hero-stats {
-		grid-template-columns: 1fr;
+		grid-template-columns: repeat(3, 1fr);
+		margin-top: 34px;
 	}
 
 	.hero-stat {
-		border-left: none;
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
-		padding: 22px 20px;
+		padding: 16px 6px;
+		gap: 6px;
 	}
 
-	.hero-stat:first-child {
-		border-top: none;
+	.hero-stat-number {
+		font-size: 1.35rem;
+	}
+
+	.hero-stat-label {
+		font-size: 9.5px;
+		letter-spacing: 0.3px;
 	}
 }

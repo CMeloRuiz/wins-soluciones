@@ -4,6 +4,7 @@ import Reveal from './Reveal'
 import { IconWifi, IconCheck } from './IconosServicio'
 import { COBERTURA, SIN_VEREDAS } from '../data/cobertura'
 import { CUNDINAMARCA_DATA, BOYACA_DATA } from '../data/coberturaDeptData'
+import { useContenido } from '../hooks/useContenido'
 import '../styles/Cobertura.css'
 
 const DEPARTAMENTOS = [
@@ -11,12 +12,39 @@ const DEPARTAMENTOS = [
 	{ id: 'boyaca', nombre: 'Boyaca', datos: BOYACA_DATA },
 ]
 
-/* Veredas indexadas por municipio, para cruzarlas con la geometria */
-const VEREDAS_POR_MUNICIPIO = Object.fromEntries(
-	COBERTURA.map((m) => [m.municipio, m])
-)
+/**
+ * Veredas indexadas por municipio, para cruzarlas con la geometria.
+ *
+ * La lista puede venir del panel administrativo o del archivo local, asi que
+ * el indice se arma a partir de la que toque en cada caso.
+ */
+function indexarPorMunicipio(lista) {
+	return Object.fromEntries(lista.map((m) => [m.municipio, m]))
+}
 
-const MARGEN_DEPTO = 0.03 // aire alrededor del departamento
+/* Aire alrededor del departamento, por si su contorno queda pegado al borde */
+const MARGEN_DEPTO = { cundinamarca: 0.03, boyaca: 0.01 }
+
+/*
+ * Ampliacion del contenido del mapa dentro de su contenedor.
+ *
+ * Los dos departamentos vienen proyectados a la misma caja de 714x804, asi que
+ * a igual encuadre se dibujan igual de grandes. Lo que cambia es cuanto llena
+ * cada silueta esa caja: Cundinamarca el 47% y Boyaca solo el 29%, por ser una
+ * forma diagonal de brazos estrechos. Por eso Boyaca se ve pequena.
+ *
+ * Se compensa encogiendo su ventana de viewBox sobre su propio centro, que es
+ * lo mismo que acercar el zoom. El factor es la raiz de esa diferencia,
+ * sqrt(47.5/29.3) = 1.27, con lo que el municipio mediano de Boyaca pasa a
+ * medir 34 px, practicamente los 34 px de Cundinamarca.
+ *
+ * El contenedor no cambia de tamano: es identico para los dos. Lo que queda
+ * fuera de la ventana son los extremos mas estrechos del departamento (Puerto
+ * Boyaca al oeste y la punta noreste), 9 municipios de 120 y ninguno de los
+ * que tienen cobertura. El recorte lo hace el propio viewBox, y el
+ * "overflow: hidden" de la zona queda como red de seguridad.
+ */
+const ZOOM_DEPTO = { cundinamarca: 1, boyaca: 1.27 }
 
 /** Caja que engloba un path. Usan solo M/L/Z con coordenadas absolutas. */
 function cajaDePath(d) {
@@ -32,20 +60,30 @@ function cajaDePath(d) {
 	return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }
 }
 
-/** Ventana que encuadra el departamento entero */
-function encuadrar(datos) {
+/** Ventana que encuadra el departamento, con su ampliacion propia */
+function encuadrar(datos, margen, zoom) {
 	const d = cajaDePath(datos.deptPath)
-	const mx = d.w * MARGEN_DEPTO
-	const my = d.h * MARGEN_DEPTO
-	const x = d.x - mx, y = d.y - my
-	const ancho = d.w + mx * 2, alto = d.h + my * 2
+	const mx = d.w * margen
+	const my = d.h * margen
+	let x = d.x - mx, y = d.y - my
+	let ancho = d.w + mx * 2, alto = d.h + my * 2
+
+	/* Encoger la ventana sobre su centro amplia lo que se ve dentro de ella */
+	if (zoom !== 1) {
+		const cx = x + ancho / 2, cy = y + alto / 2
+		ancho /= zoom
+		alto /= zoom
+		x = cx - ancho / 2
+		y = cy - alto / 2
+	}
+
 	return { viewBox: `${x} ${y} ${ancho} ${alto}`, x, y, ancho, alto }
 }
 
 /* Se calculan una sola vez: los datasets son estaticos */
 const ENCUADRES = {
-	cundinamarca: encuadrar(CUNDINAMARCA_DATA),
-	boyaca: encuadrar(BOYACA_DATA),
+	cundinamarca: encuadrar(CUNDINAMARCA_DATA, MARGEN_DEPTO.cundinamarca, ZOOM_DEPTO.cundinamarca),
+	boyaca: encuadrar(BOYACA_DATA, MARGEN_DEPTO.boyaca, ZOOM_DEPTO.boyaca),
 }
 
 /**
@@ -69,8 +107,8 @@ function Degradados({ sufijo }) {
 }
 
 /** Ficha del municipio seleccionado */
-function FichaMunicipio({ nombre }) {
-	const datos = VEREDAS_POR_MUNICIPIO[nombre]
+function FichaMunicipio({ nombre, indice }) {
+	const datos = indice[nombre]
 	const veredas = datos?.veredas ?? []
 
 	return (
@@ -130,6 +168,10 @@ function Cobertura() {
 	)
 
 	useEffect(() => () => clearTimeout(temporizador.current), [])
+
+	/* Veredas del panel administrativo; si no hay API, las del archivo local */
+	const remoto = useContenido()
+	const indiceVeredas = indexarPorMunicipio(remoto?.cobertura ?? COBERTURA)
 
 	const departamento = DEPARTAMENTOS.find((d) => d.id === deptId)
 	const { municipios, municipiosBase = [] } = departamento.datos
@@ -276,14 +318,14 @@ function Cobertura() {
 
 							<div className="cob-panel-cuerpo" aria-live="polite">
 								{activo
-									? <FichaMunicipio nombre={activo} />
+									? <FichaMunicipio nombre={activo} indice={indiceVeredas} />
 									: <PanelVacio total={municipios.length} />}
 							</div>
 						</div>
 					</figure>
 
 					<figcaption className="cob-pie">
-						<span className="cob-pie-depto">{departamento.nombre}</span>
+						{/* <span className="cob-pie-depto">{departamento.nombre}</span> */}
 						<span className="cob-pie-ayuda">
 							{puedeHover
 								? 'Pasa el mouse sobre un municipio para ver sus veredas'

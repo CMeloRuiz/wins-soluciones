@@ -1,0 +1,132 @@
+/* ===== Aviso flotante (toast) =====
+ *
+ * Confirmacion o error de una accion del panel. Se apoya en la esquina
+ * superior derecha, encima del contenido, para que no desplace nada de la
+ * pagina al aparecer ni al irse.
+ */
+
+.toast-zona {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 1000;
+	display: flex;
+	justify-content: flex-end;
+	/* Sin esto, la zona vacia taparia los clics de la esquina */
+	pointer-events: none;
+}
+
+.toast {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	max-width: 380px;
+	padding: 14px 14px 14px 16px;
+	border: 1px solid;
+	border-radius: 12px;
+	background-color: #fff;
+	box-shadow: 0 16px 40px rgba(4, 8, 20, 0.22);
+	pointer-events: auto;
+	animation: toast-entrar 0.28s ease-out;
+}
+
+/* --- Exito: el verde de cobertura del sitio --- */
+
+.toast--ok {
+	border-color: rgba(27, 107, 58, 0.3);
+}
+
+.toast--ok .toast-icono {
+	background-color: rgba(27, 107, 58, 0.12);
+	color: #145c31;
+}
+
+/* --- Error: rojo, claramente distinto del exito --- */
+
+.toast--error {
+	border-color: rgba(180, 35, 35, 0.3);
+}
+
+.toast--error .toast-icono {
+	background-color: rgba(180, 35, 35, 0.1);
+	color: #b42323;
+}
+
+.toast-icono {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+}
+
+.toast-icono svg {
+	width: 14px;
+	height: 14px;
+}
+
+.toast-texto {
+	flex: 1;
+	padding-top: 2px;
+	color: #0a1128;
+	font-size: 13.5px;
+	font-weight: 600;
+	line-height: 1.5;
+}
+
+.toast-cerrar {
+	flex-shrink: 0;
+	padding: 2px;
+	border: none;
+	background: none;
+	color: #6b7280;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.toast-cerrar:hover {
+	color: #0a1128;
+}
+
+.toast-cerrar svg {
+	display: block;
+	width: 15px;
+	height: 15px;
+}
+
+@keyframes toast-entrar {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+}
+
+/* ===== Responsive ===== */
+
+/* A ancho completo en movil: 380px no caben en un telefono */
+@media (max-width: 520px) {
+	.toast-zona {
+		top: 12px;
+		right: 12px;
+		left: 12px;
+	}
+
+	.toast {
+		max-width: none;
+		width: 100%;
+	}
+}
+
+/* ===== Accesibilidad ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.toast {
+		animation: none;
+	}
+
+	.toast-cerrar {
+		transition: none;
+	}
+}

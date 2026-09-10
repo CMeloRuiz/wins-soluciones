@@ -24,6 +24,25 @@ const REDES = [
 	},
 ]
 
+/* Candado del acceso administrativo. Hereda color y tamano del texto */
+function IconoCandado() {
+	return (
+		<svg
+			className="footer-enlace-icono"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			aria-hidden="true"
+		>
+			<rect x="4" y="10.5" width="16" height="10.5" rx="2" />
+			<path d="M8 10.5V7a4 4 0 0 1 8 0v3.5" />
+		</svg>
+	)
+}
+
 const COLUMNAS = [
 	{
 		titulo: 'Servicios',
@@ -36,9 +55,13 @@ const COLUMNAS = [
 		// marcador de posicion hasta que exista la pagina correspondiente.
 		enlaces: [
 			{ texto: 'Quienes somos', to: '/nosotros' },
-			'Cobertura',
+			// Ancla al bloque de cobertura del Home; la resuelve ScrollToTop
+			{ texto: 'Cobertura', to: '/#cobertura' },
 			'Trabaja con nosotros',
 			{ texto: 'Contactenos', to: '/contacto' },
+			// No es para el visitante medio: va discreto, al final y en otra
+			// pestana, para no sacar al visitante del sitio publico
+			{ texto: 'Acceso administrativo', to: '/admin', discreto: true, nuevaPestana: true },
 		],
 	},
 	{
@@ -80,13 +103,37 @@ function Footer() {
 						<h3 className="footer-col-title">{col.titulo}</h3>
 						<ul className="footer-col-list">
 							{col.enlaces.map((enlace) => {
-								// Los enlaces pueden ser texto plano o { texto, to }
+								// Los enlaces pueden ser texto plano o { texto, to, discreto }
 								const texto = typeof enlace === 'string' ? enlace : enlace.texto
 								const to = typeof enlace === 'string' ? null : enlace.to
+								const clase = enlace.discreto ? 'footer-enlace-discreto' : undefined
+
+								/*
+								 * En pestana nueva se usa un <a> normal y no un Link de router:
+								 * el Link intercepta el click para navegar dentro de la misma
+								 * pestana, que es justo lo contrario de lo que se busca aqui.
+								 */
+								if (enlace.nuevaPestana) {
+									return (
+										<li key={texto}>
+											<a
+												href={to}
+												className={clase}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												<IconoCandado />
+												{texto}
+											</a>
+										</li>
+									)
+								}
 
 								return (
 									<li key={texto}>
-										{to ? <Link to={to}>{texto}</Link> : <a href="#">{texto}</a>}
+										{to
+											? <Link to={to} className={clase}>{texto}</Link>
+											: <a href="#">{texto}</a>}
 									</li>
 								)
 							})}
@@ -97,6 +144,11 @@ function Footer() {
 
 			<div className="footer-bottom">
 				<p>&copy; 2026 WINS Soluciones. Todos los derechos reservados.</p>
+
+				{/* El separador es decorativo: se oculta al apilarse en movil */}
+				<span className="footer-bottom-sep" aria-hidden="true">|</span>
+
+				<p className="footer-creditos">Creado por ColdevIA</p>
 			</div>
 		</footer>
 	)

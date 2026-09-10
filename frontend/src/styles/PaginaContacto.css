@@ -5,6 +5,8 @@
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+	/* Sostiene el bloque cuando la imagen no llega a cubrirlo entero */
+	background-color: #0a1128;
 }
 
 .contacto-principal::before {
@@ -566,5 +568,22 @@
 
 	.contacto-mapa-marco iframe {
 		height: 300px;
+	}
+}
+
+/* ===== Fondo en pantallas estrechas =====
+ *
+ * Al apilarse las dos columnas, la seccion pasa de ~1000px de alto a cerca de
+ * 1900px. Con una caja tan estrecha y alta, "cover" ampliaba la imagen hasta
+ * dejar visible solo un 12% de su ancho.
+ *
+ * A ancho completo y altura natural no se recorta ni se deforma nada: la
+ * imagen ocupa la franja superior y el resto lo cubre el color de fondo, que
+ * es casi lo unico que se percibia bajo el degradado del overlay.
+ */
+@media (max-width: 760px) {
+	.contacto-principal {
+		background-size: 100% auto;
+		background-position: center top;
 	}
 }

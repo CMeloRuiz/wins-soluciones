@@ -1,0 +1,628 @@
+/* ===== Panel administrativo =====
+ *
+ * Lenguaje visual funcional de admin (barra lateral, formularios, tablas),
+ * distinto del sitio publico. Lo que si comparte son los colores de marca:
+ * el azul oscuro en la barra lateral y el azul de acento en las acciones,
+ * para que se note que es el mismo proyecto.
+ */
+
+.admin-layout,
+.admin-login,
+.admin-cargando {
+	--admin-navy: #0a1128;
+	--admin-azul: #2d3db9;
+	--admin-borde: rgba(10, 17, 40, 0.12);
+	--admin-texto: #0a1128;
+	--admin-suave: #6b7280;
+	--admin-fondo: #f4f5f7;
+}
+
+/* ===== Login ===== */
+
+.admin-login {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 40px 20px;
+	background-color: var(--admin-navy);
+}
+
+.admin-login-card {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 380px;
+	padding: 38px 34px 30px;
+	border-radius: 16px;
+	background-color: #fff;
+	box-shadow: 0 30px 60px rgba(4, 8, 20, 0.45);
+}
+
+/*
+ * La tarjeta es un flex en columna: el logo lleva ancho propio, asi que sin
+ * el "auto" de los margenes se pega al borde izquierdo en lugar de centrarse.
+ * El margen automatico lo centra en cualquier ancho de tarjeta.
+ */
+.admin-login-logo {
+	display: block;
+	width: 120px;
+	max-width: 60%;
+	margin: 0 auto 24px;
+}
+
+.admin-login-titulo {
+	color: var(--admin-texto);
+	font-size: 1.35rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.admin-login-sub {
+	margin-top: 6px;
+	margin-bottom: 22px;
+	color: var(--admin-suave);
+	font-size: 13.5px;
+}
+
+.admin-login-volver {
+	margin-top: 20px;
+	color: var(--admin-suave);
+	font-size: 13px;
+	text-align: center;
+	transition: color 0.25s ease;
+}
+
+.admin-login-volver:hover {
+	color: var(--admin-azul);
+}
+
+/* ===== Estructura del panel ===== */
+
+.admin-layout {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	min-height: 100vh;
+	background-color: var(--admin-fondo);
+}
+
+.admin-sidebar {
+	display: flex;
+	flex-direction: column;
+	padding: 26px 18px;
+	background-color: var(--admin-navy);
+}
+
+.admin-sidebar-marca img {
+	width: 118px;
+}
+
+.admin-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-top: 34px;
+}
+
+.admin-nav-btn {
+	padding: 11px 14px;
+	border: none;
+	border-radius: 8px;
+	background: none;
+	color: #9ca3af;
+	font-size: 14px;
+	font-weight: 500;
+	font-family: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.admin-nav-btn:hover {
+	background-color: rgba(255, 255, 255, 0.06);
+	color: #fff;
+}
+
+.admin-nav-btn.is-activo {
+	background-color: var(--admin-azul);
+	color: #fff;
+}
+
+.admin-sidebar-pie {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	/* Empuja el pie al fondo de la barra */
+	margin-top: auto;
+	padding-top: 24px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar-enlace {
+	padding: 0;
+	border: none;
+	background: none;
+	color: #9ca3af;
+	font-size: 13px;
+	font-family: inherit;
+	cursor: pointer;
+	transition: color 0.25s ease;
+}
+
+.admin-sidebar-enlace:hover {
+	color: #fff;
+}
+
+.admin-contenido {
+	position: relative;
+	padding: 34px 38px 60px;
+	overflow-x: hidden;
+}
+
+/* ===== Bloques ===== */
+
+.admin-panel {
+	max-width: 900px;
+	padding: 30px 32px 34px;
+	border: 1px solid var(--admin-borde);
+	border-radius: 14px;
+	background-color: #fff;
+	box-shadow: 0 2px 8px rgba(10, 17, 40, 0.05);
+}
+
+.admin-panel-head h2 {
+	color: var(--admin-texto);
+	font-size: 1.3rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.admin-panel-head p {
+	margin-top: 7px;
+	color: var(--admin-suave);
+	font-size: 13.5px;
+	line-height: 1.65;
+}
+
+.admin-subtitulo {
+	margin-top: 34px;
+	color: var(--admin-texto);
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+.admin-nota {
+	margin-top: 6px;
+	color: var(--admin-suave);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+/* Aviso permanente dentro de un panel */
+.admin-aviso {
+	margin-top: 20px;
+	padding: 13px 16px;
+	border: 1px solid rgba(45, 61, 185, 0.2);
+	border-radius: 10px;
+	background-color: rgba(45, 61, 185, 0.06);
+	color: #3b465e;
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+/* ===== Campos ===== */
+
+.admin-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+	margin-top: 26px;
+}
+
+.admin-campo {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-width: 0;
+}
+
+.admin-campo--ancho {
+	grid-column: 1 / -1;
+}
+
+.admin-campo > span {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 10px;
+	color: #3b465e;
+	font-size: 12.5px;
+	font-weight: 600;
+}
+
+.admin-contador {
+	color: #9ca3af;
+	font-size: 11px;
+	font-style: normal;
+	font-variant-numeric: tabular-nums;
+}
+
+.admin-campo input,
+.admin-campo textarea,
+.admin-campo select {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid var(--admin-borde);
+	border-radius: 8px;
+	background-color: #f8f9fb;
+	color: var(--admin-texto);
+	font-size: 13.5px;
+	font-family: inherit;
+	transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.admin-campo textarea {
+	resize: vertical;
+	line-height: 1.6;
+}
+
+.admin-campo input:focus,
+.admin-campo textarea:focus,
+.admin-campo select:focus {
+	outline: none;
+	background-color: #fff;
+	border-color: var(--admin-azul);
+	box-shadow: 0 0 0 3px rgba(45, 61, 185, 0.15);
+}
+
+/* ===== Estadisticas del hero ===== */
+
+.admin-stats {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 16px;
+	margin-top: 18px;
+}
+
+.admin-stat {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+	padding: 16px 16px 18px;
+	border: 1px solid var(--admin-borde);
+	border-radius: 10px;
+}
+
+.admin-stat legend {
+	padding: 0 6px;
+	color: var(--admin-suave);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+/* ===== Imagenes ===== */
+
+.admin-imagenes {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 26px;
+}
+
+.admin-imagen {
+	display: grid;
+	grid-template-columns: 190px 1fr;
+	gap: 20px;
+	padding: 16px;
+	border: 1px solid var(--admin-borde);
+	border-radius: 12px;
+}
+
+.admin-imagen-vista {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 16 / 10;
+	border-radius: 8px;
+	background-color: #f0f2f5;
+	overflow: hidden;
+}
+
+.admin-imagen-vista img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.admin-imagen-vacia {
+	padding: 12px;
+	color: #9ca3af;
+	font-size: 11.5px;
+	line-height: 1.5;
+	text-align: center;
+}
+
+.admin-imagen-cuerpo h3 {
+	color: var(--admin-texto);
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.admin-imagen-cuerpo p {
+	margin-top: 6px;
+	color: var(--admin-suave);
+	font-size: 13px;
+	line-height: 1.6;
+}
+
+.admin-imagen-acciones {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-top: 16px;
+}
+
+/* ===== Cobertura ===== */
+
+.admin-municipios {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin-top: 22px;
+}
+
+.admin-municipio {
+	padding: 16px 18px 20px;
+	border: 1px solid var(--admin-borde);
+	border-radius: 12px;
+}
+
+.admin-municipio legend {
+	padding: 0 7px;
+	color: var(--admin-texto);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.admin-municipio-fila {
+	display: grid;
+	/* La ultima columna se ajusta al ancho del boton */
+	grid-template-columns: 1fr 1fr auto;
+	align-items: end;
+	gap: 14px;
+	margin-bottom: 16px;
+}
+
+/* ===== Botones ===== */
+
+.admin-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	/* Separa el giro del texto cuando la accion esta en curso */
+	gap: 8px;
+	padding: 11px 20px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	font-size: 13.5px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.admin-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.admin-btn--primario {
+	background-color: var(--admin-azul);
+	color: #fff;
+}
+
+.admin-btn--primario:hover:not(:disabled) {
+	background-color: #3a4bd6;
+}
+
+.admin-btn--secundario {
+	border-color: var(--admin-borde);
+	background-color: #fff;
+	color: #3b465e;
+}
+
+.admin-btn--secundario:hover:not(:disabled) {
+	border-color: var(--admin-azul);
+	color: var(--admin-azul);
+}
+
+.admin-btn--texto {
+	padding: 11px 6px;
+	background: none;
+	color: var(--admin-suave);
+}
+
+.admin-btn--texto:hover:not(:disabled) {
+	color: var(--admin-azul);
+}
+
+.admin-btn--peligro {
+	padding: 10px 16px;
+	border-color: rgba(180, 35, 35, 0.25);
+	background-color: #fff;
+	color: #b42323;
+}
+
+.admin-btn--peligro:hover:not(:disabled) {
+	background-color: #b42323;
+	border-color: #b42323;
+	color: #fff;
+}
+
+.admin-acciones {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-top: 28px;
+	padding-top: 22px;
+	border-top: 1px solid var(--admin-borde);
+}
+
+/* ===== Mensajes ===== */
+
+.admin-error {
+	margin-top: 14px;
+	padding: 11px 14px;
+	border: 1px solid rgba(180, 35, 35, 0.25);
+	border-radius: 8px;
+	background-color: rgba(180, 35, 35, 0.06);
+	color: #b42323;
+	font-size: 13px;
+	line-height: 1.55;
+}
+
+/*
+ * Giro del boton mientras se espera al servidor. Toma el color del texto del
+ * boton, asi sirve igual en el azul solido, en el secundario y en el de texto
+ * sin repetir el color en cada variante.
+ */
+.admin-btn-spinner {
+	display: inline-block;
+	width: 13px;
+	height: 13px;
+	border: 2px solid currentColor;
+	/* Un cuarto transparente es lo que hace visible el giro */
+	border-right-color: transparent;
+	border-radius: 50%;
+	opacity: 0.85;
+	animation: admin-girar 0.7s linear infinite;
+}
+
+/* El boton deshabilitado no reacciona al puntero */
+.admin-btn[disabled],
+.admin-btn[aria-busy='true'] {
+	cursor: progress;
+}
+
+/*
+ * Aviso de salida automatica en el login. Usa el ambar y no el rojo del error:
+ * no ha fallado nada, solo se explica por que hay que entrar otra vez.
+ */
+.admin-nota--aviso {
+	margin-bottom: 16px;
+	padding: 10px 14px;
+	border-radius: 8px;
+	background-color: rgba(180, 120, 20, 0.1);
+	color: #8a5a0b;
+	line-height: 1.5;
+}
+
+/* ===== Carga ===== */
+
+.admin-cargando {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+	min-height: 100vh;
+	background-color: var(--admin-fondo);
+	color: var(--admin-suave);
+	font-size: 14px;
+}
+
+.admin-spinner {
+	width: 26px;
+	height: 26px;
+	border: 3px solid rgba(45, 61, 185, 0.2);
+	border-top-color: var(--admin-azul);
+	border-radius: 50%;
+	animation: admin-girar 0.8s linear infinite;
+}
+
+@keyframes admin-girar {
+	to { transform: rotate(360deg); }
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 900px) {
+	/* La barra lateral pasa a ser una cabecera horizontal */
+	.admin-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-sidebar {
+		flex-direction: row;
+		align-items: center;
+		gap: 18px;
+		flex-wrap: wrap;
+		padding: 16px 20px;
+	}
+
+	.admin-nav {
+		flex-direction: row;
+		gap: 6px;
+		margin-top: 0;
+	}
+
+	.admin-sidebar-pie {
+		flex-direction: row;
+		gap: 16px;
+		margin-top: 0;
+		margin-left: auto;
+		padding-top: 0;
+		border-top: none;
+	}
+
+	.admin-contenido {
+		padding: 22px 20px 50px;
+	}
+
+	.admin-panel {
+		padding: 22px 20px 26px;
+	}
+
+	.admin-grid,
+	.admin-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-imagen {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-imagen-vista {
+		max-width: 260px;
+	}
+
+	.admin-municipio-fila {
+		grid-template-columns: 1fr;
+		align-items: stretch;
+	}
+}
+
+/* ===== Accesibilidad ===== */
+
+@media (prefers-reduced-motion: reduce) {
+	.admin-btn-spinner {
+		animation-duration: 2s;
+	}
+
+	.admin-btn,
+	.admin-nav-btn,
+	.admin-campo input,
+	.admin-campo textarea,
+	.admin-campo select {
+		transition: none;
+	}
+
+	.admin-spinner {
+		animation-duration: 2s;
+	}
+}

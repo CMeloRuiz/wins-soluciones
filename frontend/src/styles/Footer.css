@@ -105,7 +105,16 @@
 
 /* ===== Fila inferior ===== */
 
+/*
+ * Copyright a la izquierda y creditos a la derecha. Con "wrap" y el separador
+ * oculto, en pantallas estrechas los dos textos se apilan en lugar de
+ * desbordar la fila.
+ */
 .footer-bottom {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 24px 0 28px;
@@ -115,6 +124,17 @@
 .footer-bottom p {
 	color: #9ca3af;
 	font-size: 13px;
+}
+
+.footer-bottom-sep {
+	color: #9ca3af;
+	font-size: 13px;
+	opacity: 0.45;
+}
+
+/* Mismo tono tenue de la fila, un punto mas apagado por ser una firma */
+.footer-creditos {
+	opacity: 0.75;
 }
 
 /* ===== Responsive ===== */
@@ -166,11 +186,56 @@
 		margin-top: 16px;
 	}
 
+	/*
+	 * En movil el pie va centrado, y los dos textos se apilan en lugar de
+	 * competir por el ancho. Apilados el separador sobra.
+	 */
 	.footer-bottom {
+		flex-direction: column;
+		justify-content: center;
+		gap: 6px;
 		padding: 22px 0 26px;
+	}
+
+	.footer-bottom-sep {
+		display: none;
 	}
 
 	.footer-bottom p {
 		font-size: 12.5px;
 	}
+}
+
+/*
+ * Enlace de servicio (acceso administrativo): mas pequeno y apagado que el
+ * resto, porque no va dirigido al visitante sino a quien gestiona el sitio.
+ */
+/*
+ * Se cuelga de .footer-col-list para ganarle en especificidad a la regla
+ * ".footer-col-list a", que fija 14px. Con la clase suelta el tamano reducido
+ * no llegaba a aplicarse y el enlace se veia igual que los demas.
+ */
+.footer-col-list .footer-enlace-discreto {
+	/* inline-flex para que el candado y el texto compartan linea base optica */
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	opacity: 0.6;
+}
+
+/*
+ * El candado se mide en "em", asi que crece con el texto del enlace y no hay
+ * que tocarlo si cambia el tamano de la fuente. Sin currentColor tendria que
+ * repetirse aqui el color del enlace y los dos podrian desincronizarse.
+ */
+.footer-enlace-icono {
+	width: 1.16em;
+	height: 1.16em;
+	flex-shrink: 0;
+	color: currentColor;
+}
+
+.footer-col-list .footer-enlace-discreto:hover {
+	opacity: 1;
 }

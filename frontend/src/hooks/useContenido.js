@@ -1,0 +1,32 @@
+import { createContext, useContext } from 'react'
+import { API } from '../admin/api'
+
+/**
+ * ===== Contenido editable del sitio =====
+ *
+ * Aqui viven el contexto y los ayudantes; el componente que hace la peticion
+ * es ProveedorContenido, en components/. Van separados porque un archivo que
+ * exporta un componente no puede exportar tambien funciones sueltas sin
+ * romper el refresco en caliente de Vite.
+ */
+
+export const ContenidoContexto = createContext(null)
+
+/**
+ * Devuelve lo que el administrador haya editado desde el panel, o null si
+ * todavia no llego o no hay backend. Cada seccion decide su respaldo, de modo
+ * que el sitio publico nunca depende de que la API responda.
+ */
+export function useContenido() {
+	return useContext(ContenidoContexto)
+}
+
+/**
+ * Convierte una ruta de imagen del backend ("/uploads/x.jpg") en URL completa.
+ * Si no hay imagen subida devuelve null y el componente usa la suya.
+ */
+export function urlDeImagen(ruta) {
+	return ruta ? `${API}${ruta}` : null
+}
+
+export default useContenido
