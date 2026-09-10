@@ -3,7 +3,9 @@ node_modules/
 # Credenciales reales: nunca al repositorio
 .env
 
-# Contenido editado desde el panel y sus imagenes
-data/contenido.json
+# Imagenes subidas desde el panel
 uploads/*
 !uploads/.gitkeep
+
+# data/contenido.json ya NO se ignora: dejo de ser estado vivo cuando el
+# contenido paso a PostgreSQL, y se conserva como respaldo historico.

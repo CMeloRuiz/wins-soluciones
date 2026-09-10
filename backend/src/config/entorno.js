@@ -62,6 +62,15 @@ export const config = {
 
 	/* Limite de subida de imagenes, en megabytes */
 	maxImagenMb: Number(process.env.MAX_IMAGEN_MB) || 4,
+
+	baseDatos: {
+		/*
+		 * Cadena de conexion de Neon. No se usa requerida(): si falta, el
+		 * servidor tiene que arrancar igual para poder responder 503 con una
+		 * explicacion, en vez de morir sin que nadie vea por que.
+		 */
+		url: process.env.DATABASE_URL || '',
+	},
 }
 
 export default config

@@ -23,8 +23,14 @@ export function manejadorErrores(error, req, res, next) {
 		})
 	}
 
-	if (error.status === 400) {
-		return res.status(400).json({ error: error.message })
+	/*
+	 * Errores con status propio: los de validacion (400) y los de base de
+	 * datos caida (503). En ambos el mensaje esta escrito para leerse, asi
+	 * que se manda tal cual.
+	 */
+	if (error.status === 400 || error.status === 503) {
+		if (error.status === 503) console.error('[error] Base de datos:', error.causa?.message ?? error.message)
+		return res.status(error.status).json({ error: error.message })
 	}
 
 	console.error('[error]', error)

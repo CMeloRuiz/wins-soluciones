@@ -3,8 +3,7 @@
 API que da servicio al panel administrativo (`/admin` en el sitio) y entrega
 el contenido editable al sitio publico.
 
-Node.js + Express. Sin base de datos por ahora: la persistencia es un archivo
-JSON. Ver [Persistencia](#persistencia) mas abajo.
+Node.js + Express + PostgreSQL (Neon). Ver [Persistencia](#persistencia).
 
 ---
 
@@ -13,7 +12,9 @@ JSON. Ver [Persistencia](#persistencia) mas abajo.
 ```bash
 cd backend
 npm install
-cp .env.example .env      # y completa las variables
+cp .env.example .env      # y completa las variables, DATABASE_URL incluida
+npm run db:crear          # crea la tabla (una sola vez por base de datos)
+npm run migrar            # pasa data/contenido.json a la base (una sola vez)
 npm run dev               # con recarga automatica
 ```
 
@@ -21,6 +22,9 @@ Queda escuchando en `http://localhost:4000`.
 Para comprobarlo: `curl http://localhost:4000/api/salud`
 
 En produccion se arranca con `npm start`.
+
+Los dos pasos de base de datos solo se hacen la primera vez. En arranques
+posteriores basta con `npm run dev`.
 
 ### Variables de entorno
 
@@ -37,6 +41,7 @@ Todas viven en `.env`, que **no** se sube al repositorio. La plantilla es
 | `ADMIN_CLAVE_HASH` | **si** (o `ADMIN_CLAVE`) | Hash bcrypt de la clave. |
 | `ADMIN_CLAVE` | alternativa | Clave en texto plano. El servidor la hashea al arrancar. Comodo para empezar, pero deja la clave legible en el archivo. |
 | `MAX_IMAGEN_MB` | no | Tamano maximo por imagen. Por defecto `4`. |
+| `DATABASE_URL` | **si** | Cadena de conexion de PostgreSQL en Neon. Ver abajo. |
 
 Generar el secreto de sesion:
 
@@ -52,25 +57,52 @@ npm run hash -- tuClaveSegura
 
 Copia la linea que imprime y pegala en `.env`.
 
+### DATABASE_URL
+
+La da el panel de [Neon](https://neon.tech), en **Connection Details**.
+
+Usa la opcion **Pooled connection**, no la directa. Se distingue porque el
+host lleva `-pooler`:
+
+```
+postgresql://USUARIO:CLAVE@ep-algo-123456-pooler.REGION.aws.neon.tech/DB?sslmode=require
+```
+
+Sin pooling, cada reinicio del servicio deja conexiones abiertas y se acaba
+agotando el limite de conexiones del proyecto. Con reinicios frecuentes
+(Render redespliega en cada push) eso pasa antes de lo que parece.
+
+Si la variable falta o la base no responde, el servidor **arranca igual** y
+avisa por consola; las rutas de contenido responden `503` con el motivo, y
+`/api/salud` sigue funcionando. Se hizo asi a proposito: un backend caido sin
+explicacion es mas dificil de diagnosticar que uno que responde diciendo que
+le falta la base de datos.
+
 ---
 
 ## Estructura
 
 ```
 backend/
-  data/contenido.json      Contenido editado. Se crea solo al primer arranque.
+  db/schema.sql            Definicion de la tabla. Se ejecuta una vez.
+  data/contenido.json      Respaldo historico. Ya NO se usa en caliente.
   uploads/                 Imagenes subidas desde el panel.
   src/
-    config/entorno.js      Lee y valida las variables de entorno.
+    config/
+      entorno.js           Lee y valida las variables de entorno.
+      db.js                Pool de conexiones y traduccion de fallos a 503.
     models/
-      almacen.js           Unico punto de acceso al disco.
+      almacen.js           Unico punto de acceso a la base de datos.
       contenidoInicial.js  Contenido de fabrica, para sembrar y restaurar.
     middleware/
       autenticacion.js     Verifica el token en las rutas privadas.
       errores.js           404 y manejador final de errores.
     controllers/           Logica y validacion de cada recurso.
     routes/                Definicion de las rutas.
-    scripts/generarHash.js Utilidad para la clave del administrador.
+    scripts/
+      generarHash.js       Utilidad para la clave del administrador.
+      crearEsquema.js      npm run db:crear
+      migrarContenido.js   npm run migrar
     server.js              Arranque.
 ```
 
@@ -119,26 +151,59 @@ deformaria el dibujo.
 
 ## Persistencia
 
-**Version inicial.** Todo se guarda en `data/contenido.json`. Es suficiente
-para un solo administrador y un volumen de contenido pequeno, y evita
-arrastrar una base de datos antes de necesitarla.
+El contenido editable vive en **PostgreSQL (Neon)**, en la tabla `contenido`:
+una fila por seccion, con el JSON de esa seccion en una columna `JSONB`.
 
-Lo que ya esta resuelto:
+| clave | que guarda |
+|---|---|
+| `hero` | Textos y estadisticas del inicio |
+| `imagenes` | Rutas de las imagenes subidas por ranura |
+| `cobertura` | Municipios con sus veredas |
 
-- Las escrituras son atomicas (se escribe un temporal y se renombra encima),
-  asi que un corte a mitad no deja el archivo truncado.
-- Las escrituras simultaneas se encolan, para que no se pisen entre si.
-- Si el archivo no existe o esta corrupto, se siembra con el contenido inicial.
+Se eligio una tabla de secciones con `JSONB` en lugar de columnas por cada
+campo porque los tres bloques tienen formas muy distintas entre si, y porque
+el panel va a seguir creciendo: anadir un texto nuevo al hero no obliga a
+migrar el esquema. El contenido se guarda con la misma anidacion que tenia en
+el archivo JSON.
 
-Cuando haga falta migrar a SQLite o Postgres, **todo el acceso al disco esta
-en `src/models/almacen.js`**: basta reescribir `leer` y `guardarSeccion`
-manteniendo su firma. El resto del backend no se entera.
+La definicion esta en [`db/schema.sql`](db/schema.sql). Es idempotente
+(`CREATE TABLE IF NOT EXISTS`), asi que volver a ejecutarlo no borra nada.
 
-Lo que pediria una base de datos de verdad: varios administradores, historial
-de cambios, o mas de una instancia del servidor a la vez (con el archivo JSON,
-dos instancias se pisarian los cambios).
+### Primera vez: crear y migrar
 
----
+```bash
+npm run db:crear    # aplica db/schema.sql
+npm run migrar      # copia data/contenido.json a la tabla
+```
+
+`npm run migrar` no pisa nada por accidente: si la tabla ya tiene esas
+secciones, lo dice y pide confirmacion antes de sobrescribir. Con
+`npm run migrar -- --forzar` no pregunta, para poder lanzarlo sin nadie
+delante.
+
+En una instalacion nueva la migracion no es imprescindible: si la tabla esta
+vacia, el backend siembra las tres secciones con el contenido de fabrica al
+arrancar (`src/models/contenidoInicial.js`).
+
+**Lanza la migracion con la API parada**, o reiniciala despues. El servidor
+guarda el contenido en memoria y no se entera de los cambios hechos por fuera.
+
+### Sobre data/contenido.json
+
+Ya **no es la fuente de verdad**. Queda en el repositorio como respaldo
+historico de lo que habia antes de migrar, y como origen del script de
+migracion. El backend no lo lee ni lo escribe en ningun momento; se puede
+borrar sin que nada deje de funcionar, pero se conserva por si hace falta
+recuperar contenido antiguo.
+
+### Cache en memoria
+
+El contenido se cachea en el proceso y el cache se invalida al guardar, asi
+que un cambio del panel se ve al instante en el sitio. Esto es exacto con una
+sola instancia del servidor, que es el caso en Render. Si algun dia corren
+varias a la vez, cada una tendria su copia y un cambio tardaria en verse en
+las demas: entonces habria que quitar el cache de `src/models/almacen.js` o
+darle un tiempo de vida.
 
 ## Relacion con el sitio publico
 
@@ -164,12 +229,31 @@ Al configurarlo:
 1. Root directory: `backend`
 2. Build command: `npm install`
 3. Start command: `npm start`
-4. Variables de entorno: las de la tabla de arriba.
+4. Variables de entorno: las de la tabla de arriba, con `DATABASE_URL`
+   incluida (la cadena *pooled* de Neon).
 5. `ORIGENES_PERMITIDOS` con la URL del sitio publicado.
-6. En el Static Site del frontend, agrega `VITE_API_URL` con la URL de este
+6. Antes del primer arranque, ejecuta `npm run db:crear` y `npm run migrar`
+   contra la base de Neon. Se puede hacer desde tu equipo, poniendo la misma
+   `DATABASE_URL` en tu `.env` local: la base es la misma.
+7. En el Static Site del frontend, agrega `VITE_API_URL` con la URL de este
    servicio y vuelve a desplegar.
 
-Un aviso sobre el disco: en Render el sistema de archivos de un Web Service es
-efimero salvo que se conecte un disco persistente. Sin el, `data/contenido.json`
-y las imagenes de `uploads/` se pierden en cada despliegue. Para produccion,
-conecta un disco persistente o migra a una base de datos.
+### Lo que sigue siendo efimero
+
+El contenido ya no se pierde entre despliegues: vive en Neon, fuera de Render.
+
+Lo que **si** se sigue perdiendo son las **imagenes subidas desde el panel**.
+Se guardan en `uploads/` dentro del contenedor, y el disco de un Web Service
+en Render es efimero salvo que se conecte un disco persistente. Tras un
+redespliegue, las rutas quedan apuntando en la base a archivos que ya no
+existen.
+
+Para resolverlo hay dos caminos, ninguno hecho todavia:
+
+- conectar un disco persistente al Web Service, o
+- subir las imagenes a un servicio de objetos (Cloudinary, S3, Supabase
+  Storage) y guardar en la base la URL en vez de la ruta local.
+
+Mientras tanto, el panel sigue funcionando y basta con volver a subir las
+imagenes despues de un despliegue. Las que trae el sitio por defecto no se ven
+afectadas: son parte del frontend.

@@ -5,7 +5,7 @@
  * publico. Sirve para dos cosas: sembrar el almacen la primera vez que corre
  * el servidor, y hacer de referencia si el archivo de datos se borra.
  *
- * A partir de aqui la fuente de verdad es data/contenido.json, que es lo que
+ * A partir de aqui la fuente de verdad es la tabla "contenido", que es lo que
  * edita el panel administrativo.
  */
 export const CONTENIDO_INICIAL = {
