@@ -1,8 +1,11 @@
 # Blueprint de Render para WINS Soluciones
 #
-# Dos servicios:
-#   - wins-soluciones : el sitio publico, estatico, generado con Vite
-#   - wins-api        : el backend del panel administrativo, proceso Node
+# Declara SOLO el sitio publico: estatico, generado con Vite.
+#
+# El backend (wins-api) se crea aparte, a mano, como Web Service. No esta aqui
+# a proposito: asi se despliega, se reinicia y se revisa por separado, sin que
+# un cambio en el sitio arrastre a la API ni al reves. Los pasos y las
+# variables que necesita estan en backend/README.md.
 #
 # Para usarlo: en Render -> New -> Blueprint, y apuntar al repositorio.
 #
@@ -42,60 +45,4 @@ services:
       # Si se deja vacia, el sitio sigue funcionando con el contenido que ya
       # lleva escrito; solo deja de reflejar lo editado en el panel.
       - key: VITE_API_URL
-        sync: false
-
-  # ===== Backend del panel administrativo =====
-  - type: web
-    name: wins-api
-    env: node
-    # Solo se instala y arranca lo de backend/, sin mezclar con el frontend
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
-    # Render reinicia el servicio si esta ruta deja de responder
-    healthCheckPath: /api/salud
-
-    envVars:
-      # Render asigna el puerto por esta variable; el codigo ya la respeta.
-      - key: PORT
-        value: 10000
-
-      # Origenes autorizados por CORS: la URL del sitio publicado, sin barra
-      # final. Si no coincide, el panel no podra hablar con la API y el
-      # servidor respondera 403 diciendo cual es el origen rechazado.
-      - key: ORIGENES_PERMITIDOS
-        sync: false
-
-      # Cadena "Pooled connection" de Neon (el host lleva "-pooler").
-      - key: DATABASE_URL
-        sync: false
-
-      # Se genera aqui mismo: Render crea un valor aleatorio y no hay que
-      # inventarlo ni copiarlo a ningun sitio.
-      - key: JWT_SECRETO
-        generateValue: true
-
-      - key: JWT_DURACION
-        value: 8h
-
-      - key: ADMIN_USUARIO
-        sync: false
-
-      # Hash bcrypt, nunca la clave. Se genera con "npm run hash".
-      - key: ADMIN_CLAVE_HASH
-        sync: false
-
-      - key: MAX_IMAGEN_MB
-        value: "4"
-
-      # Las imagenes del panel se guardan en Cloudinary y no en el disco del
-      # servicio, que Render vacia en cada despliegue. Los tres valores salen
-      # del Dashboard de Cloudinary, en "API Keys".
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-
-      - key: CLOUDINARY_API_KEY
-        sync: false
-
-      - key: CLOUDINARY_API_SECRET
         sync: false

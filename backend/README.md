@@ -235,11 +235,12 @@ En el frontend esto se configura con `VITE_API_URL` (ver `frontend/.env.example`
 
 ## Desplegarlo
 
-El sitio publico esta en Render como Static Site. Este backend necesita un
-servicio aparte, de tipo Web Service, porque es un proceso que corre siempre.
+El sitio publico esta en Render como Static Site, desplegado con el
+[`render.yaml`](../render.yaml) de la raiz. Este backend necesita un servicio
+aparte, de tipo Web Service, porque es un proceso que corre siempre.
 
-Los dos servicios estan declarados en el [`render.yaml`](../render.yaml) de
-la raiz: el sitio estatico (`wins-soluciones`) y esta API (`wins-api`).
+**No esta declarado en el blueprint** a proposito: se crea a mano, para poder
+desplegarlo y reiniciarlo por separado del sitio.
 
 ### Antes de desplegar
 
@@ -253,25 +254,35 @@ npm run db:crear
 npm run migrar
 ```
 
-Y ten a mano el hash de la clave del administrador (`npm run hash`).
+Ten a mano tambien el hash de la clave del administrador (`npm run hash`) y
+las tres credenciales de Cloudinary.
 
-### Al aplicar el blueprint
+### Crear el Web Service
 
-Render pide los valores marcados como `sync: false`. No estan en el
-repositorio, y una vez guardados quedan cifrados en Render:
+En Render, **New -> Web Service**, apuntando a este repositorio:
 
-| Variable | Servicio | Que poner |
-|---|---|---|
-| `DATABASE_URL` | wins-api | La cadena *pooled* de Neon |
-| `ADMIN_USUARIO` | wins-api | El usuario del panel |
-| `ADMIN_CLAVE_HASH` | wins-api | El hash, nunca la clave |
-| `ORIGENES_PERMITIDOS` | wins-api | La URL del sitio publicado |
-| `CLOUDINARY_CLOUD_NAME` | wins-api | Del Dashboard de Cloudinary |
-| `CLOUDINARY_API_KEY` | wins-api | Del Dashboard de Cloudinary |
-| `CLOUDINARY_API_SECRET` | wins-api | Del Dashboard de Cloudinary |
-| `VITE_API_URL` | wins-soluciones | La URL de `wins-api` |
+| Campo | Valor |
+|---|---|
+| Root directory | `backend` |
+| Build command | `npm install` |
+| Start command | `npm start` |
+| Health check path | `/api/salud` |
 
-`JWT_SECRETO` lo genera Render solo; no hay que inventarlo.
+Variables de entorno:
+
+| Variable | Que poner |
+|---|---|
+| `DATABASE_URL` | La cadena *pooled* de Neon |
+| `ADMIN_USUARIO` | El usuario del panel |
+| `ADMIN_CLAVE_HASH` | El hash, nunca la clave |
+| `JWT_SECRETO` | Una cadena larga y aleatoria |
+| `ORIGENES_PERMITIDOS` | La URL del sitio publicado, sin barra final |
+| `CLOUDINARY_CLOUD_NAME` | Del Dashboard de Cloudinary |
+| `CLOUDINARY_API_KEY` | Del Dashboard de Cloudinary |
+| `CLOUDINARY_API_SECRET` | Del Dashboard de Cloudinary |
+
+`PORT` la asigna Render sola. `JWT_DURACION` y `MAX_IMAGEN_MB` tienen valores
+por defecto en el codigo.
 
 ### El orden importa
 
@@ -279,21 +290,43 @@ repositorio, y una vez guardados quedan cifrados en Render:
 tiene que conocer la URL del otro, y esas URLs no existen hasta el primer
 despliegue. Asi que:
 
-1. Despliega. Las dos variables pueden quedar vacias de momento.
-2. Copia la URL de cada servicio ya desplegado.
-3. Rellena `ORIGENES_PERMITIDOS` en `wins-api` (**sin barra final**) y
-   `VITE_API_URL` en `wins-soluciones`.
+1. Despliega el backend. `ORIGENES_PERMITIDOS` puede quedar vacia de momento.
+2. Copia la URL que Render le asigna.
+3. Ponla en `VITE_API_URL` del sitio estatico, y la URL del sitio en
+   `ORIGENES_PERMITIDOS` del backend (**sin barra final**).
 4. Vuelve a desplegar **el sitio estatico**. Vite incrusta `VITE_API_URL` en el
    bundle durante el build, no la lee al ejecutarse, asi que cambiarla sin
    reconstruir no surte efecto.
 
-Mientras tanto el sitio se ve igual que siempre: sin `VITE_API_URL` se pinta
-con el contenido que ya lleva escrito. Lo unico que no funciona todavia es el
-panel.
-
 Si el panel dice que no puede conectarse, lo primero que hay que mirar es
 `ORIGENES_PERMITIDOS`: cuando el origen no coincide, la API responde 403 y
 deja en su log el origen que rechazo.
+
+### El arranque en frio, y por que importa
+
+En el plan gratuito de Render un Web Service **se duerme tras 15 minutos sin
+trafico** y tarda cerca de un minuto en volver.
+
+Eso no afecta a la velocidad del sitio: el sitio estatico se sirve desde la
+CDN y se pinta al instante, y la llamada a la API va por detras, con un limite
+de 4 segundos. Si no llega a tiempo, cada seccion se queda con el contenido
+que lleva escrito. El visitante nunca espera.
+
+Lo que si rompe es el **proposito del panel**: si la API esta dormida, la
+peticion la despierta pero termina mucho despues de que la pagina se haya
+rendido, asi que lo editado no se ve. Con el servicio dormido casi todo el
+tiempo, el sitio publico mostraria practicamente siempre el contenido del
+codigo, no el de la base.
+
+La forma habitual de evitarlo, y gratis, es **mantenerlo despierto**: un
+servicio externo de monitorizacion que pida `/api/salud` cada 10 minutos.
+Sirven [cron-job.org](https://cron-job.org) o [UptimeRobot](https://uptimerobot.com),
+los dos con plan gratuito. Render da 750 horas de instancia al mes y un unico
+servicio despierto consume unas 730, asi que entra justo.
+
+Sin eso, el panel sigue funcionando para quien lo usa (al entrar despierta la
+API y espera lo que haga falta), pero sus cambios rara vez llegarian al
+visitante.
 
 ### Nada queda en el disco del servicio
 
