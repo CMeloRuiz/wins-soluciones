@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { api, sesion } from './api'
 import Toast from './Toast'
+import BotonRestaurar from './BotonRestaurar'
 import PanelHero from './paneles/PanelHero'
 import PanelImagenes from './paneles/PanelImagenes'
 import PanelCobertura from './paneles/PanelCobertura'
@@ -24,6 +25,14 @@ function AdminDashboard() {
 	const [fallo, setFallo] = useState('')
 	const [aviso, setAviso] = useState(null)
 
+	/*
+	 * Cambia al restaurar y se usa como "key" de los paneles, para obligarles a
+	 * montarse de nuevo. Cada panel copia su contenido a un borrador propio con
+	 * useState, que no se reinicia porque cambien las props: sin esto, tras
+	 * restaurar seguirian mostrando lo que habia antes.
+	 */
+	const [version, setVersion] = useState(0)
+
 	useEffect(() => {
 		let vigente = true
 
@@ -43,6 +52,12 @@ function AdminDashboard() {
 	/* Cada panel devuelve solo su parte; aqui se integra en el contenido completo */
 	const actualizar = (clave) => (valor) =>
 		setContenido((c) => ({ ...c, [clave]: valor }))
+
+	/* Restaurar reemplaza el contenido entero, no una seccion */
+	const alRestaurar = (nuevo) => {
+		setContenido(nuevo)
+		setVersion((n) => n + 1)
+	}
 
 	if (cargando) {
 		return (
@@ -79,6 +94,11 @@ function AdminDashboard() {
 					<button type="button" className="admin-sidebar-enlace" onClick={salir}>
 						Cerrar sesion
 					</button>
+
+					{/* Separado del resto: es la unica accion que no se puede deshacer */}
+					<div className="admin-sidebar-peligro">
+						<BotonRestaurar alRestaurar={alRestaurar} avisar={setAviso} />
+					</div>
 				</div>
 			</aside>
 
@@ -95,6 +115,7 @@ function AdminDashboard() {
 					<>
 						{seccion === 'hero' && (
 							<PanelHero
+								key={version}
 								hero={contenido.hero}
 								alGuardar={actualizar('hero')}
 								avisar={setAviso}
@@ -103,6 +124,7 @@ function AdminDashboard() {
 
 						{seccion === 'imagenes' && (
 							<PanelImagenes
+								key={version}
 								imagenes={contenido.imagenes}
 								alGuardar={actualizar('imagenes')}
 								avisar={setAviso}
@@ -111,6 +133,7 @@ function AdminDashboard() {
 
 						{seccion === 'cobertura' && (
 							<PanelCobertura
+								key={version}
 								cobertura={contenido.cobertura}
 								alGuardar={actualizar('cobertura')}
 								avisar={setAviso}

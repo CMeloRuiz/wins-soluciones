@@ -486,6 +486,59 @@
 	line-height: 1.55;
 }
 
+/* ===== Restaurar contenido original ===== */
+
+/*
+ * Separado del resto del pie por su propia linea: es la unica accion del panel
+ * que no se puede deshacer, y no debe confundirse con "Cerrar sesion", que
+ * esta justo encima.
+ */
+.admin-sidebar-peligro {
+	width: 100%;
+	margin-top: 6px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Apagado en reposo: no invita al clic, pero se encuentra si se busca */
+.admin-sidebar-enlace--peligro {
+	color: #a06b6b;
+	text-align: left;
+}
+
+.admin-sidebar-enlace--peligro:hover {
+	color: #e08585;
+}
+
+.admin-restaurar {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.admin-restaurar-aviso {
+	color: #d5d9e6;
+	font-size: 12.5px;
+	line-height: 1.5;
+}
+
+.admin-restaurar-acciones {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+/* En la barra oscura, el boton de texto necesita su propio color */
+.admin-sidebar-peligro .admin-btn--texto {
+	padding: 10px 6px;
+	color: #9ca3af;
+}
+
+.admin-sidebar-peligro .admin-btn--texto:hover:not(:disabled) {
+	color: #fff;
+}
+
 /*
  * Giro del boton mientras se espera al servidor. Toma el color del texto del
  * boton, asi sirve igual en el azul solido, en el secundario y en el de texto

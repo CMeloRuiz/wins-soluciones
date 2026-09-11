@@ -1,4 +1,5 @@
 import { leer, guardarSeccion, restaurar } from '../models/almacen.js'
+import { borrar } from '../config/imagenes.js'
 
 /* ===== Validacion =====
  * El contenido llega de un formulario, asi que se comprueba forma y limites
@@ -82,8 +83,26 @@ export async function obtenerImagenes(req, res) {
 	res.json(contenido.imagenes)
 }
 
-/** Restablece el contenido de fabrica. Util si una edicion sale mal. */
+/**
+ * Restablece el contenido de fabrica. Util si una edicion sale mal.
+ *
+ * Ademas de devolver los textos a su estado original, borra de Cloudinary las
+ * imagenes que se hubieran subido. El contenido de fabrica las deja en null,
+ * asi que si no se borrasen aqui quedarian alojadas para siempre sin que nada
+ * las referencie, gastando cuota y sin forma de llegar a ellas desde el panel.
+ */
 export async function restaurarTodo(req, res) {
+	const contenido = await leer()
+
+	/*
+	 * Se borra antes de tocar la base. Si Cloudinary fallara a mitad, el
+	 * contenido sigue apuntando a las imagenes que queden, que es un estado
+	 * coherente; al reves quedarian huerfanas y sin rastro de cuales eran.
+	 */
+	for (const [ranura, ruta] of Object.entries(contenido.imagenes ?? {})) {
+		if (ruta) await borrar(ranura)
+	}
+
 	res.json(await restaurar())
 }
 
