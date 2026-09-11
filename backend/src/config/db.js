@@ -141,6 +141,31 @@ export async function consultar(sql, parametros = []) {
 }
 
 /**
+ * A que base se esta apuntando, en una linea y sin credenciales.
+ *
+ * Se imprime al arrancar porque un "Base de datos conectada" a secas no dice
+ * nada: con la misma cadena en el .env, una prueba local escribe sobre la
+ * base de produccion sin que nada lo advierta. Viendo el host y el nombre se
+ * sabe de un vistazo donde se va a escribir.
+ *
+ * Nunca se muestran usuario ni clave, que van en la parte de la cadena que
+ * aqui se descarta.
+ */
+function describirDestino() {
+	try {
+		const { hostname, pathname } = new URL(config.baseDatos.url)
+		const base = pathname.replace(/^\//, '') || '(sin nombre)'
+
+		/* El endpoint de Neon identifica la rama; el resto del host es ruido */
+		const endpoint = hostname.split('.')[0]
+
+		return `${base} en ${endpoint}`
+	} catch {
+		return '(no se pudo leer DATABASE_URL)'
+	}
+}
+
+/**
  * Comprueba al arrancar que la base responde.
  *
  * No corta el arranque si falla: el servidor tiene que quedar en pie para
@@ -149,7 +174,8 @@ export async function consultar(sql, parametros = []) {
 export async function verificarConexion() {
 	try {
 		const { rows } = await consultar('SELECT NOW() AS ahora')
-		console.log(`  Base de datos conectada (${rows[0].ahora.toISOString()})`)
+		console.log(`  Base de datos conectada: ${describirDestino()}`)
+		console.log(`  Hora del servidor: ${rows[0].ahora.toISOString()}`)
 		return true
 	} catch (error) {
 		console.error('\n[db] AVISO: la base de datos no responde.')

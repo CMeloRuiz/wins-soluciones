@@ -56,10 +56,78 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 Generar el hash de la clave (lo recomendado):
 
 ```bash
-npm run hash -- tuClaveSegura
+npm run hash
 ```
 
-Copia la linea que imprime y pegala en `.env`.
+Pide la clave por teclado, sin mostrarla, y escupe la linea lista para pegar
+en `.env`. No se pasa como argumento a proposito: asi quedaba guardada en
+texto plano en el historial de la terminal, y ademas PowerShell interpreta
+caracteres como `# Backend de WINS Soluciones
+
+API que da servicio al panel administrativo (`/admin` en el sitio) y entrega
+el contenido editable al sitio publico.
+
+Node.js + Express. El contenido se guarda en PostgreSQL (Neon) y las imagenes
+en Cloudinary. Ver [Persistencia](#persistencia).
+
+---
+
+## Levantarlo en local
+
+```bash
+cd backend
+npm install
+cp .env.example .env      # y completa las variables, DATABASE_URL incluida
+npm run db:crear          # crea la tabla (una sola vez por base de datos)
+npm run migrar            # pasa data/contenido.json a la base (una sola vez)
+npm run dev               # con recarga automatica
+```
+
+Queda escuchando en `http://localhost:4000`.
+Para comprobarlo: `curl http://localhost:4000/api/salud`
+
+En produccion se arranca con `npm start`.
+
+Los dos pasos de base de datos solo se hacen la primera vez. En arranques
+posteriores basta con `npm run dev`.
+
+### Variables de entorno
+
+Todas viven en `.env`, que **no** se sube al repositorio. La plantilla es
+`.env.example`.
+
+| Variable | Obligatoria | Para que sirve |
+|---|---|---|
+| `PORT` | no | Puerto. Por defecto `4000`. |
+| `ORIGENES_PERMITIDOS` | no | Origenes que pueden llamar a la API, separados por coma. Por defecto `http://localhost:5173`. En produccion pon aqui la URL del sitio. |
+| `JWT_SECRETO` | **si** | Cadena larga y aleatoria con la que se firman las sesiones. |
+| `JWT_DURACION` | no | Cuanto dura la sesion. Por defecto `8h`. |
+| `ADMIN_USUARIO` | **si** | Usuario del administrador. |
+| `ADMIN_CLAVE_HASH` | **si** (o `ADMIN_CLAVE`) | Hash bcrypt de la clave. |
+| `ADMIN_CLAVE` | alternativa | Clave en texto plano. El servidor la hashea al arrancar. Comodo para empezar, pero deja la clave legible en el archivo. |
+| `MAX_IMAGEN_MB` | no | Tamano maximo por imagen. Por defecto `4`. |
+| `DATABASE_URL` | **si** | Cadena de conexion de PostgreSQL en Neon. Ver abajo. |
+| `CLOUDINARY_CLOUD_NAME` | para imagenes | Nombre de la cuenta de Cloudinary. |
+| `CLOUDINARY_API_KEY` | para imagenes | Clave publica de la API. |
+| `CLOUDINARY_API_SECRET` | para imagenes | Secreto de la API. |
+
+Generar el secreto de sesion:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
+
+ antes de que Node los vea, con lo que se podia hashear
+algo distinto de lo escrito.
+
+Para comprobar si una clave coincide con el hash que ya esta en el `.env`:
+
+```bash
+npm run hash -- --probar
+```
+
+Al cambiar el hash hay que **reiniciar la API**: el `.env` se lee solo al
+arrancar.
 
 ### DATABASE_URL
 
@@ -209,6 +277,35 @@ historico de lo que habia antes de migrar, y como origen del script de
 migracion. El backend no lo lee ni lo escribe en ningun momento; se puede
 borrar sin que nada deje de funcionar, pero se conserva por si hace falta
 recuperar contenido antiguo.
+
+### Una base aparte para desarrollo
+
+Lo natural al empezar es poner la misma `DATABASE_URL` en el `.env` local y en
+Render. Funciona, pero significa que **cualquier prueba desde tu equipo escribe
+sobre lo que ve el cliente**: un `npm run migrar -- --forzar`, un restaurar
+desde el panel local, o simplemente guardar un texto para probar.
+
+Neon lo resuelve con **ramas**. Una rama es una copia de la base que arranca
+con los mismos datos y a partir de ahi va por su cuenta, con su propia cadena
+de conexion. En el plan gratuito entran varias.
+
+Para montarlo:
+
+1. En el proyecto de Neon, **Branches -> Create branch**. Nombrala `desarrollo`.
+2. Copia su cadena **Pooled connection** (el host llevara otro endpoint).
+3. Ponla en tu `.env` local.
+4. Deja la rama principal solo en las variables de Render.
+
+A partir de ahi, lo que rompas en local se queda en local.
+
+Para saber contra que base estas trabajando, el servidor lo dice al arrancar:
+
+```
+Base de datos conectada: neondb en ep-algo-123456-pooler
+```
+
+Ese identificador es el que distingue una rama de otra. Conviene mirarlo antes
+de lanzar cualquier cosa que escriba.
 
 ### Cache en memoria
 
